@@ -301,6 +301,9 @@ document.querySelectorAll('.style-tag').forEach(tag => {
     if (s === 'all') { selectedStyles.clear(); }
     else { selectedStyles.has(s) ? selectedStyles.delete(s) : selectedStyles.add(s); }
     updateStyleUI();
+    // Reset seen names when style changes so More Names doesn't get stuck
+    allNames = [];
+    totalGenerated = 0;
   });
 });
 
