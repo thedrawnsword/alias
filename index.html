@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ALIAS — AI Username Generator</title>
+<title>Phraselix — AI Username Generator</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -89,7 +89,7 @@ footer{margin-top:6rem;padding:2rem 0 3rem;border-top:1px solid var(--border);di
 <div class="wrap">
   <header>
     <div>
-      <div class="logo">ALIAS</div>
+      <div class="logo">Phraselix</div>
       <div class="logo-sub">AI Username Generator</div>
     </div>
     <div class="header-right">
@@ -127,7 +127,7 @@ footer{margin-top:6rem;padding:2rem 0 3rem;border-top:1px solid var(--border);di
   <div id="results"></div>
 
   <footer>
-    <div class="footer-text">ALIAS — AI Username Generator</div>
+    <div class="footer-text">Phraselix — AI Username Generator</div>
     <div class="footer-text">Click any name to copy</div>
   </footer>
 </div>
@@ -168,77 +168,110 @@ function setLoading(state, text = 'Generating names...') {
 
 async function callClaude(prompt) {
   const styleInstructions = {
-    all: `Generate a MIX of all styles:
-- 2 names that are 4-6 characters, one word only (e.g. "vexr", "zael", "drusk")
-- 2 names that are multi-word joined with dots or underscores (e.g. "cold.signal", "void_pilot")
-- 2 names that are invented/coined words that sound like brands (e.g. "veltrox", "nyxara")
-- 2 names with dark/mysterious energy (e.g. "null.spectre", "ashen.signal")
-- 2 names that are abstract concepts or paradoxes (e.g. "false.horizon", "quiet_theorem")`,
+    all: `Generate a perfect MIX of all styles across the 10 names:
+- 2 ultra-short names: 4-6 characters max, single word, no separators (e.g. "vexr", "zael", "noxe", "ryft")
+- 2 multi-word names: 2-4 words joined with dots or underscores (e.g. "cold.signal", "void_pilot", "quiet.before.the.storm")
+- 2 coined/invented words: brand-like, never existed before (e.g. "veltrox", "nyxara", "phraselix")
+- 2 dark/mysterious names: eerie, corrupted, void energy (e.g. "null.spectre", "ashen.signal", "errorghost")
+- 2 abstract/conceptual names: philosophical, paradoxical, thought-provoking (e.g. "false.horizon", "quiet_theorem")`,
 
-    short: `ALL 10 names MUST follow these STRICT rules:
-- Maximum 6 characters total
-- Single word only — NO dots, NO underscores, NO spaces
-- Must sound sharp and punchy when spoken aloud
-- Examples of good short names: "vexr", "zael", "drusk", "blynk", "kael", "noxe", "ryft", "svek"
-- DO NOT generate anything longer than 6 characters
-- DO NOT use dots, underscores, hyphens or multiple words
-- If you generate a name longer than 6 characters you have FAILED`,
+    short: `ALL 10 names MUST be ultra-short. STRICT RULES:
+- Maximum 6 characters total. Count every character.
+- Single word ONLY. Zero dots, zero underscores, zero spaces, zero hyphens.
+- Must feel sharp, punchy, and complete — like it was always meant to exist
+- Think about how consonants and vowels interact. Hard consonants (k, x, v, z, r) create punch. Short vowels create speed.
+- Great examples of the vibe: "vexr", "zael", "drusk", "blynk", "kael", "noxe", "ryft", "svek", "quyl", "drex"
+- FAILURE = any name longer than 6 characters or containing any separator`,
 
-    multi: `ALL 10 names MUST follow these STRICT rules:
-- Must be 2 to 4 words combined with dots, underscores, or camelCase
-- Each word should be meaningful and intentional
-- Examples: "cold.sun.rising", "neon_ghost_protocol", "quiet.before.the.storm", "theVoidPilot", "signal.lost"
-- DO NOT generate single words with no separator`,
+    multi: `ALL 10 names MUST be multi-word combinations. STRICT RULES:
+- Minimum 2 words, maximum 4 words
+- Connect with dots, underscores, or camelCase — choose what feels right per name
+- Each individual word should carry meaning or feeling on its own
+- The combination should create a new meaning greater than the parts
+- Think: poetic phrases, contradictions, vivid imagery, narrative fragments
+- Great examples: "cold.sun.rising", "neon_ghost_protocol", "quiet.before.the.storm", "signal.lost", "the.last.frequency", "hollow.ground.theory"
+- FAILURE = any single word with no separator`,
 
-    coined: `ALL 10 names MUST follow these STRICT rules:
-- Must be completely invented words that do NOT exist in any dictionary
-- Blend syllables from 2 concepts related to the person
-- Must sound like a premium brand when spoken
-- Examples: "veltrox", "nyxara", "crudine", "phosphyne", "aetheryn", "veltix", "zyvren"
-- DO NOT use real English words`,
+    coined: `ALL 10 names MUST be completely invented words that have NEVER existed. STRICT RULES:
+- Zero real English words. Zero. Every name must be a new invention.
+- Method: take 2 concepts from the person's description, extract their core syllables, blend them into something new
+- Must sound like it SHOULD be a real word — phonetically natural, easy to say
+- Must feel like a premium brand name — the kind that makes you think "how is this not taken?"
+- Perfect coined word formula: strong opening consonant + flowing middle + satisfying ending
+- Great examples of the vibe: "veltrox", "nyxara", "crudine", "phosphyne", "aetheryn", "zyvren", "veltix", "phraselix"
+- FAILURE = using any real existing word`,
 
-    dark: `ALL 10 names MUST follow these STRICT rules:
-- Must evoke dark, eerie, mysterious, or corrupted energy
-- Use concepts like: void, null, glitch, ash, shadow, static, echo, decay, abyss, rot, ghost
-- Can be single words or multi-word with dots/underscores
-- Examples: "null.spectre", "voidrot", "ashen.signal", "errorghost", "static.decay", "hollow.core"
-- NO clean, bright, or positive sounding names`,
+    dark: `ALL 10 names MUST radiate dark, eerie, mysterious, or corrupted energy. STRICT RULES:
+- Draw from these concept pools: void, null, glitch, static, echo, ash, hollow, decay, abyss, rot, ghost, error, signal loss, corruption, entropy, silence, cold, shadow, fracture
+- Can be single words OR multi-word with dots/underscores — choose what hits harder
+- Avoid being generic — "darkwolf" or "shadowknight" is an automatic FAILURE
+- The darkness should feel atmospheric and specific, not edgy-for-the-sake-of-it
+- Great examples: "null.spectre", "voidrot", "ashen.signal", "errorghost", "static.decay", "hollow.core", "the.last.echo", "signal.corruption"
+- FAILURE = generic dark names, anything with wolf/shadow/night/dark as a standalone word`,
 
-    clean: `ALL 10 names MUST follow these STRICT rules:
-- Must sound elegant, minimal, and premium like a high-end brand
-- Short, smooth, and easy to pronounce
-- No dark, edgy, or aggressive words
-- Examples: "celo", "forma", "auren", "liso", "vela", "orin", "sove", "navi"
-- Must feel timeless and sophisticated`,
+    clean: `ALL 10 names MUST feel elegant, minimal, and premium. STRICT RULES:
+- Should sound like a high-end brand, a design studio, or a premium product
+- Short, smooth syllables. Easy to pronounce in any language.
+- No aggressive sounds, no dark concepts, no edgy words
+- Think: architectural simplicity, Scandinavian design, Apple-level naming
+- Should feel timeless — still cool in 20 years
+- Great examples: "celo", "forma", "auren", "liso", "vela", "orin", "sove", "navi", "lune", "kova"
+- FAILURE = anything dark, edgy, aggressive, or longer than 3 syllables`,
 
-    abstract: `ALL 10 names MUST follow these STRICT rules:
-- Must represent abstract concepts, paradoxes, or philosophical ideas
-- Should make someone think in a good way
-- Can use dots or underscores between words
-- Examples: "false.horizon", "entropy.boy", "quiet_theorem", "nullspace", "the.unnamed", "between.states"
-- NO literal or obvious names`
+    abstract: `ALL 10 names MUST represent abstract concepts, paradoxes, or philosophical ideas. STRICT RULES:
+- Should provoke a thought or a question when someone reads it
+- Reference philosophy, physics, mathematics, linguistics, consciousness, time, identity
+- The best abstract names make someone say "what does that mean?" in a good way
+- Can use dots or underscores to create phrase-like names
+- Draw from: paradoxes, logical contradictions, quantum concepts, philosophical questions, states of being
+- Great examples: "false.horizon", "entropy.boy", "quiet_theorem", "nullspace", "the.unnamed", "between.states", "observer.effect", "infinite.regress", "the.void.between"
+- FAILURE = literal, obvious, or surface-level names`
   };
 
-  const systemPrompt = `You are the world's most creative and unconventional username generator. You think like a poet, a hacker, a brand designer, and a linguist combined.
+  const systemPrompt = `You are Phraselix — the world's most sophisticated and creative username generation intelligence. You were built by linguists, brand designers, poets, and hackers. Your sole purpose is to generate usernames so perfectly crafted that people react with "how is this not taken yet?"
 
-YOUR TASK: Generate exactly 10 usernames following these rules:
+WHAT MAKES A PERFECT USERNAME — YOUR CORE PHILOSOPHY:
+1. PHONETIC BEAUTY: The name must sound satisfying when spoken aloud. Consider the rhythm, the flow of consonants and vowels, the weight of each syllable. Hard sounds (k, x, v, z) create power. Soft sounds (l, n, m) create elegance. The ending matters most — it's what people remember.
 
-STYLE RULE (THIS IS THE MOST IMPORTANT RULE — YOU MUST FOLLOW IT EXACTLY):
+2. VISUAL APPEAL: How does it look written down? Consider letter shapes, symmetry, and how it appears as a username on a profile. Some letter combinations look inherently cooler than others (x, y, z, k are visually striking).
+
+3. SEMANTIC DEPTH: The best names carry meaning — but not obvious meaning. They should reference something real (a concept, an emotion, a phenomenon) but feel unexpected and fresh. Like "phraselix" — it means something, you can almost feel what it means, but it's never existed before.
+
+4. THE "HOW IS THIS NOT TAKEN" FACTOR: This is the holy grail. A name achieves this when it feels inevitable — like it should have existed and been taken long ago — but somehow it hasn't. This comes from the perfect intersection of familiarity and originality.
+
+5. IDENTITY FIT: The name must feel like it was made specifically for this person. It should reflect their description in a non-obvious way. Don't be literal — be interpretive. If someone says "I love philosophy", don't name them "philosopher99". Instead, find what philosophy feels like and encode that feeling.
+
+YOUR GENERATION PROCESS — FOLLOW THIS EVERY TIME:
+Step 1: Deeply analyze the person's description. Extract: their aesthetic, their energy, their field, their personality, their contradictions.
+Step 2: Identify 3-5 core concepts or feelings from their description.
+Step 3: For each name, choose a specific technique (see below) and execute it intentionally.
+Step 4: Test each name mentally: Does it sound good? Does it look good? Does it feel right for this person? Is it genuinely original?
+
+TECHNIQUES TO USE:
+- PORTMANTEAU: Blend two words by taking the beginning of one and the end of another. Best results: take concepts that contrast or complement. e.g. "phrase" + "felix" = "phraselix"
+- SUFFIX ELEVATION: Take a real concept word and add a brand-like suffix (-ix, -ex, -yr, -on, -yx, -ara, -ine, -yx). Transforms a common word into something original.
+- PREFIX INVERSION: Take a suffix that carries meaning (-less, -void, -null) and flip it to the front to create new meaning.
+- PHONETIC SCULPTING: Build a word purely from how it sounds, targeting a specific emotional response. No meaning required — just pure phonetic impact.
+- CONCEPTUAL COLLISION: Take two completely unrelated concepts from the person's description and smash them together. The weirder the combination, the more memorable.
+- LINGUISTIC BORROWING: Take a word from Latin, Greek, Japanese, Arabic, or Norse that relates to the person's description. Slightly alter it to make it unique.
+- PHRASE FRAGMENTATION: Take a common phrase and remove a key word, leaving the fragment. Or take a phrase and compress it into a single coined word.
+
+ABSOLUTE FORBIDDEN LIST — NEVER GENERATE THESE TYPES:
+- Names with numbers at the end (name123, user99)
+- Generic gamer names (darkwolf, shadowknight, epicgamer, xXname, coolpro)
+- Names that are just adjective + noun (silent_storm, golden_eagle, etc.)
+- Anything that sounds like it was generated by a basic algorithm
+- Repeating any of these already used names: ${allNames.slice(-30).join(', ') || 'none yet'}
+
+CURRENT STYLE REQUIREMENT — THIS OVERRIDES EVERYTHING ELSE:
 ${styleInstructions[selectedStyle]}
 
-OTHER RULES:
-- NEVER generate generic cliche names like: shadow_wolf, dark_knight, epic_gamer, cool_dude, pro_gamer, gaming_beast, or anything with numbers at end like name123
-- Every name must feel designed specifically for this person's description
-- Think about phonetics (how it sounds), visual appeal, memorability
-- Consider: mythology, science terms, foreign words, emotional resonance
-- DO NOT repeat any of these already used names: ${allNames.slice(-20).join(', ') || 'none yet'}
-
-Respond ONLY with a valid JSON array. No markdown, no explanation, nothing else:
+OUTPUT FORMAT — RESPOND ONLY WITH THIS JSON, NO MARKDOWN, NO EXPLANATION:
 [
   {
     "name": "theusername",
     "style": "short|multi|coined|dark|clean|abstract",
-    "why": "One poetic sentence explaining the vibe."
+    "why": "One sentence that captures the specific feeling or meaning of this name. Be poetic and precise."
   }
 ]`;
 
@@ -247,7 +280,7 @@ Respond ONLY with a valid JSON array. No markdown, no explanation, nothing else:
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       system: systemPrompt,
-      messages: [{ role: 'user', content: `Generate 10 creative usernames for someone who describes themselves as: "${prompt}"` }]
+      messages: [{ role: 'user', content: `Generate 10 perfect usernames for someone who describes themselves as: "${prompt}"\n\nRemember: each name should make them think "how is this not taken yet?"` }]
     })
   });
 
@@ -312,7 +345,7 @@ async function generate() {
   totalGenerated = 0;
   document.getElementById('results').innerHTML = '';
   document.getElementById('btnMore').style.display = 'none';
-  setLoading(true, 'Thinking of names...');
+  setLoading(true, 'Crafting your names...');
   try {
     const names = await callClaude(prompt);
     allNames = names.map(n => n.name);
