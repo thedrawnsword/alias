@@ -387,10 +387,34 @@ function renderNames(names, append = false) {
     else grid.appendChild(card);
   });
 }
+
+function isBadInput(text) {
+  const t = text.toLowerCase();
+  const banned = [
+    // cuss words
+    'fuck','shit','ass','bitch','dick','cock','pussy','cunt','bastard','damn','hell',
+    'piss','crap','slut','whore','nigga','nigger','faggot','retard',
+    // sexual
+    'sex','porn','nude','naked','nsfw','xxx','horny','boob','tit','penis','vagina',
+    'anal','blowjob','orgasm','fetish','erotic','hentai','onlyfans',
+    // violence/hate
+    'kill','murder','rape','suicide','terrorist','nazi','racist',
+    // +18 indicators
+    '18+','adult','explicit','sexual',
+  ];
+  return banned.some(word => {
+    const regex = new RegExp('\\b' + word + '\\b', 'i');
+    return regex.test(t);
+  });
+}
 async function generate() {
   const prompt = document.getElementById('prompt').value.trim();
   if (!prompt) { document.getElementById('prompt').focus(); return; }
   if (isLoading) return;
+  if (isBadInput(prompt)) {
+    showError("Keep it clean — Phraselix isn't that kind of tool.");
+    return;
+  }
   hideError();
   allNames = []; totalGenerated = 0;
   document.getElementById('results').innerHTML = '';
