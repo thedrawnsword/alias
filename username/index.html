@@ -411,14 +411,15 @@ async function generateMore() {
   finally { setLoading(false); }
 }
 </script>
-<script defer src="/_vercel/insights/script.js">
+<script defer src="/_vercel/insights/script.js"></script>
+<script>
 // Rotating taglines
 const taglines = [
   'Describe yourself. Get a name that <em>hits.</em>',
   'Stop using your birth year as a <em>username.</em>',
   'Your vibe. Translated into a <em>name.</em>',
   'Type anything. Get something <em>fire.</em>',
-  'The name you've been looking for <em>is here.</em>',
+  "The name you've been looking for <em>is here.</em>",
   'Sound like yourself. But <em>better.</em>',
   'Every name is made <em>for you specifically.</em>',
 ];
@@ -446,10 +447,9 @@ const placeholders = [
   "self-taught coder, nihilist, makes beats in a room with no windows",
   "philosopher by day, DJ by night, broke but happy",
 ];
-// Pick random but never same as last
 const used = sessionStorage.getItem('lastPlaceholder');
 let idx;
-do { idx = Math.floor(Math.random() * placeholders.length); } while (placeholders[idx] === used);
+do { idx = Math.floor(Math.random() * placeholders.length); } while (placeholders[idx] === used && placeholders.length > 1);
 sessionStorage.setItem('lastPlaceholder', placeholders[idx]);
 document.getElementById('prompt').placeholder = placeholders[idx];
 </script>
