@@ -89,6 +89,31 @@ textarea::placeholder{color:var(--text3)}
 .style-clean{background:rgba(232,255,71,.1);color:var(--accent)}
 .style-dark{background:rgba(255,71,87,.1);color:var(--red)}
 .style-abstract{background:rgba(167,139,250,.1);color:var(--purple)}
+
+/* ── Favorites ── */
+.fav-btn{position:absolute;top:.9rem;right:.9rem;background:none;border:none;cursor:pointer;font-size:1rem;opacity:.3;transition:opacity .2s,transform .2s;padding:.2rem;color:var(--accent);}
+.fav-btn:hover{opacity:.8;transform:scale(1.2);}
+.fav-btn.saved{opacity:1;transform:scale(1.1);}
+.name-card{position:relative;}
+
+/* ── Favorites drawer ── */
+.fav-bar{display:none;align-items:center;justify-content:space-between;padding:.8rem 1.2rem;background:var(--bg2);border:1px solid var(--border2);border-radius:4px;margin-bottom:1rem;gap:1rem;}
+.fav-bar.show{display:flex;}
+.fav-bar-left{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--text2);}
+.fav-bar-left span{color:var(--accent);}
+.fav-bar-right{display:flex;gap:.6rem;}
+.fav-action{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:1.5px;text-transform:uppercase;padding:.3rem .8rem;border:1px solid var(--border2);border-radius:2px;background:none;color:var(--text2);cursor:pointer;transition:all .15s;}
+.fav-action:hover{border-color:var(--accent);color:var(--accent);}
+.fav-action.primary{border-color:var(--accent);color:var(--accent);}
+.fav-action.primary:hover{background:var(--accent);color:var(--bg);}
+
+/* ── Share toast ── */
+.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(20px);background:var(--accent);color:var(--bg);font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:2px;text-transform:uppercase;padding:.6rem 1.4rem;border-radius:3px;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;z-index:999;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ── Shared names banner ── */
+.shared-banner{background:rgba(232,255,71,.05);border:1px solid rgba(232,255,71,.15);border-radius:4px;padding:1rem 1.4rem;margin-bottom:2rem;font-family:'DM Mono',monospace;font-size:.62rem;color:var(--accent);letter-spacing:1.5px;text-transform:uppercase;display:none;}
+.shared-banner.show{display:block;}
 .error-msg{font-family:'DM Mono',monospace;font-size:.75rem;color:var(--red);padding:1rem 1.2rem;border:1px solid rgba(255,71,87,.2);border-radius:4px;background:rgba(255,71,87,.05);display:none;letter-spacing:1px;}
 .error-msg.show{display:block}
 footer{margin-top:6rem;padding:2rem 0 3rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
@@ -146,8 +171,17 @@ body{cursor:none;}
     <div class="loader"><span></span><span></span><span></span></div>
     <span id="loadingText">Crafting your names...</span>
   </div>
+  <div class="shared-banner" id="sharedBanner">✦ Someone shared these names with you</div>
+  <div class="fav-bar" id="favBar">
+    <div class="fav-bar-left">Favorites: <span id="favCount">0</span></div>
+    <div class="fav-bar-right">
+      <button class="fav-action" onclick="clearFavs()">Clear</button>
+      <button class="fav-action primary" onclick="shareFavs()">Share Favorites ↗</button>
+    </div>
+  </div>
   <div class="error-msg" id="errorMsg"></div>
   <div id="results"></div>
+  <div class="toast" id="toast"></div>
 
   <footer>
     <div class="footer-text">Phraselix — AI Username Generator</div>
@@ -372,7 +406,7 @@ function copyName(card, name) {
 function renderNames(names, append = false) {
   const container = document.getElementById('results');
   if (!append) {
-    container.innerHTML = `<div class="results-header"><div class="results-label">Generated Names</div><div class="results-count" id="nameCount">${names.length} names</div></div><div class="names-grid" id="namesGrid"></div>`;
+    container.innerHTML = `<div class="results-header"><div class="results-label">Generated Names</div><div style="display:flex;align-items:center;gap:1rem"><button onclick="shareResults()" style="font-family:'DM Mono',monospace;font-size:.55rem;letter-spacing:1.5px;text-transform:uppercase;padding:.25rem .7rem;border:1px solid var(--border2);border-radius:2px;background:none;color:var(--text3);cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--text3)'">Share ↗</button><div class="results-count" id="nameCount">${names.length} names</div></div></div><div class="names-grid" id="namesGrid"></div>`;
   } else {
     document.getElementById('nameCount').textContent = `${totalGenerated} names`;
   }
@@ -381,7 +415,9 @@ function renderNames(names, append = false) {
     const card = document.createElement('div');
     card.className = 'name-card';
     card.style.animationDelay = `${i * 0.05}s`;
-    card.innerHTML = `<div class="name-text">${item.name}</div><span class="name-style ${styleClass(item.style)}">${styleDisplay(item.style)}</span><div class="name-why">${item.why}</div><div class="copy-hint">click to copy</div>`;
+    const isFaved = getFavs().some(f => f.name === item.name);
+    card.innerHTML = `<button class="fav-btn ${isFaved ? 'saved' : ''}" title="Save to favorites">♥</button><div class="name-text">${item.name}</div><span class="name-style ${styleClass(item.style)}">${styleDisplay(item.style)}</span><div class="name-why">${item.why}</div><div class="copy-hint">click to copy</div>`;
+    card.querySelector('.fav-btn').addEventListener('click', (e) => { e.stopPropagation(); toggleFav(card, item); });
     card.addEventListener('click', () => copyName(card, item.name));
     if (append) grid.insertBefore(card, grid.firstChild);
     else grid.appendChild(card);
@@ -486,6 +522,85 @@ document.querySelectorAll('a,button,.name-card').forEach(el=>{
   el.addEventListener('mouseenter',()=>{ring.style.width='48px';ring.style.height='48px';ring.style.borderColor='rgba(232,255,71,.6)';});
   el.addEventListener('mouseleave',()=>{ring.style.width='32px';ring.style.height='32px';ring.style.borderColor='rgba(232,255,71,.3)';});
 });
+
+// ── Favorites ──
+function getFavs() {
+  try { return JSON.parse(localStorage.getItem('phraselix_favs') || '[]'); } catch { return []; }
+}
+function saveFavs(favs) {
+  localStorage.setItem('phraselix_favs', JSON.stringify(favs));
+  updateFavBar();
+}
+function toggleFav(card, item) {
+  let favs = getFavs();
+  const idx = favs.findIndex(f => f.name === item.name);
+  const btn = card.querySelector('.fav-btn');
+  if (idx > -1) {
+    favs.splice(idx, 1);
+    btn.classList.remove('saved');
+    showToast('Removed from favorites');
+  } else {
+    favs.push(item);
+    btn.classList.add('saved');
+    showToast('Saved to favorites ♥');
+  }
+  saveFavs(favs);
+}
+function clearFavs() {
+  saveFavs([]);
+  // update all heart buttons
+  document.querySelectorAll('.fav-btn').forEach(b => b.classList.remove('saved'));
+  showToast('Favorites cleared');
+}
+function updateFavBar() {
+  const favs = getFavs();
+  const bar = document.getElementById('favBar');
+  document.getElementById('favCount').textContent = favs.length;
+  bar.classList.toggle('show', favs.length > 0);
+}
+
+// ── Share ──
+function shareFavs() {
+  const favs = getFavs();
+  if (!favs.length) return;
+  const names = favs.map(f => f.name).join(',');
+  const url = window.location.origin + window.location.pathname + '?shared=' + encodeURIComponent(names);
+  navigator.clipboard.writeText(url).then(() => showToast('Link copied — share it!'));
+}
+function shareResults() {
+  const names = allNames.slice(0, 10).join(',');
+  if (!names) return;
+  const url = window.location.origin + window.location.pathname + '?shared=' + encodeURIComponent(names);
+  navigator.clipboard.writeText(url).then(() => showToast('Link copied — share it!'));
+}
+
+// ── Toast ──
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+// ── Load shared names from URL ──
+function loadSharedNames() {
+  const params = new URLSearchParams(window.location.search);
+  const shared = params.get('shared');
+  if (!shared) return;
+  const names = decodeURIComponent(shared).split(',').filter(Boolean);
+  if (!names.length) return;
+  document.getElementById('sharedBanner').classList.add('show');
+  const fakeItems = names.map(n => ({ name: n, style: 'clean', why: 'Shared with you via Phraselix.' }));
+  allNames = names;
+  totalGenerated = names.length;
+  renderNames(fakeItems, false);
+  document.getElementById('btnMore').style.display = 'none';
+}
+
+// Init
+updateFavBar();
+loadSharedNames();
+
 document.getElementById('taglineText').innerHTML = taglines[Math.floor(Math.random() * taglines.length)];
 
 const placeholders = [
