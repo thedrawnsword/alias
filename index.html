@@ -371,7 +371,8 @@ function renderNames(names, append = false) {
     card.style.animationDelay = `${i * 0.05}s`;
     card.innerHTML = `<div class="name-text">${item.name}</div><span class="name-style ${styleClass(item.style)}">${styleDisplay(item.style)}</span><div class="name-why">${item.why}</div><div class="copy-hint">click to copy</div>`;
     card.addEventListener('click', () => copyName(card, item.name));
-    grid.appendChild(card);
+    if (append) grid.insertBefore(card, grid.firstChild);
+    else grid.appendChild(card);
   });
 }
 async function generate() {
