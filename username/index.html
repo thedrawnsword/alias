@@ -482,9 +482,7 @@ function copyName(card, name) {
 function renderNames(names, append = false) {
   const container = document.getElementById('results');
   if (!append) {
-    container.innerHTML = `<div class="results-header"><div class="results-label">Generated Names</div><div style="display:flex;align-items:center;gap:1rem"><button onclick="shareResults()" style="font-family:'DM Mono',monospace;font-size:.55rem;letter-spacing:1.5px;text-transform:uppercase;padding:.25rem .7rem;border:1px solid var(--border2);border-radius:2px;background:none;color:var(--text3);cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--text3)'">Share ↗</button><div class="results-count" id="nameCount">${names.length} names</div></div></div><div class="names-grid" id="namesGrid"></div>`;
-  } else {
-    document.getElementById('nameCount').textContent = `${totalGenerated} names`;
+    container.innerHTML = `<div class="results-header"><div class="results-label">Generated Names</div><div style="display:flex;align-items:center;gap:1rem"><button onclick="shareResults()" style="font-family:'DM Mono',monospace;font-size:.55rem;letter-spacing:1.5px;text-transform:uppercase;padding:.25rem .7rem;border:1px solid var(--border2);border-radius:2px;background:none;color:var(--text3);cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--text3)'">Share ↗</button><div class="results-count" id="nameCount">0 names</div></div></div><div class="names-grid" id="namesGrid"></div>`;
   }
   const grid = document.getElementById('namesGrid');
   names.forEach((item, i) => {
@@ -498,6 +496,9 @@ function renderNames(names, append = false) {
     if (append) grid.insertBefore(card, grid.firstChild);
     else grid.appendChild(card);
   });
+  // Always update count based on actual cards in grid
+  const countEl = document.getElementById('nameCount');
+  if (countEl) countEl.textContent = document.querySelectorAll('.name-card').length + ' names';
 }
 
 function isBadInput(text) {
