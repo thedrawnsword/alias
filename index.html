@@ -30,10 +30,16 @@ header{padding:3rem 0 2rem;display:flex;align-items:flex-end;justify-content:spa
 textarea{width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:4px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:1.05rem;font-weight:300;padding:1.2rem 1.4rem;resize:none;outline:none;transition:border-color .2s,box-shadow .2s;line-height:1.6;min-height:110px;}
 textarea:focus{border-color:var(--accent);box-shadow:0 0 0 1px rgba(232,255,71,.15),inset 0 0 30px rgba(232,255,71,.02);}
 textarea::placeholder{color:var(--text3)}
-.style-row{display:flex;flex-wrap:wrap;gap:.5rem;margin:1.2rem 0 1.5rem;}
+.style-section{margin:1.2rem 0 1.5rem;}
+.style-hint{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:.7rem;}
+.style-hint span{color:var(--accent);opacity:.7}
+.style-row{display:flex;flex-wrap:wrap;gap:.5rem;}
 .style-tag{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:1.5px;text-transform:uppercase;padding:.35rem .8rem;border:1px solid var(--border2);border-radius:2px;background:transparent;color:var(--text2);cursor:pointer;transition:all .15s;user-select:none;}
 .style-tag:hover{border-color:var(--accent);color:var(--accent)}
 .style-tag.active{background:var(--accent);color:var(--bg);border-color:var(--accent);font-weight:500;}
+.style-tag.active-multi{border-color:var(--blue);color:var(--blue);background:rgba(78,205,196,.08);}
+.selected-summary{font-family:'DM Mono',monospace;font-size:.58rem;color:var(--text3);letter-spacing:1px;margin-top:.6rem;min-height:1rem;}
+.selected-summary.lit{color:var(--accent);opacity:.8}
 .btn-row{display:flex;gap:1rem;align-items:center}
 .btn-generate{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:3px;padding:.7rem 2.5rem;background:var(--accent);color:var(--bg);border:none;border-radius:3px;cursor:pointer;transition:all .15s;position:relative;overflow:hidden;}
 .btn-generate::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);transform:translateX(-100%);transition:transform .4s;}
@@ -102,16 +108,21 @@ footer{margin-top:6rem;padding:2rem 0 3rem;border-top:1px solid var(--border);di
   <section class="input-section">
     <div class="prompt-label">Describe yourself, your vibe, or your brand</div>
     <textarea id="prompt" placeholder="e.g. dark aesthetic gamer who loves philosophy and neon lights, building a startup in crypto, minimalist photographer obsessed with Japan..." rows="4"></textarea>
-    <div class="style-row">
-      <span style="font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--text3);display:flex;align-items:center;margin-right:.3rem">Style:</span>
-      <button class="style-tag active" data-style="all">All Styles</button>
-      <button class="style-tag" data-style="short">Short & Punchy</button>
-      <button class="style-tag" data-style="multi">Multi-Word</button>
-      <button class="style-tag" data-style="coined">Coined Words</button>
-      <button class="style-tag" data-style="dark">Dark / Mysterious</button>
-      <button class="style-tag" data-style="clean">Clean / Minimal</button>
-      <button class="style-tag" data-style="abstract">Abstract</button>
+
+    <div class="style-section">
+      <div class="style-hint">Style <span>— pick one or combine multiple</span></div>
+      <div class="style-row">
+        <button class="style-tag active" data-style="all">All Styles</button>
+        <button class="style-tag" data-style="short">Short & Punchy</button>
+        <button class="style-tag" data-style="multi">Multi-Word</button>
+        <button class="style-tag" data-style="coined">Coined Words</button>
+        <button class="style-tag" data-style="dark">Dark / Mysterious</button>
+        <button class="style-tag" data-style="clean">Clean / Minimal</button>
+        <button class="style-tag" data-style="abstract">Abstract</button>
+      </div>
+      <div class="selected-summary" id="selectedSummary"></div>
     </div>
+
     <div class="btn-row">
       <button class="btn-generate" id="btnGenerate" onclick="generate()">Generate Names</button>
       <button class="btn-more" id="btnMore" onclick="generateMore()">+ More Names</button>
@@ -121,7 +132,7 @@ footer{margin-top:6rem;padding:2rem 0 3rem;border-top:1px solid var(--border);di
 
   <div class="loading" id="loading">
     <div class="loader"><span></span><span></span><span></span></div>
-    <span id="loadingText">Generating names...</span>
+    <span id="loadingText">Crafting your names...</span>
   </div>
   <div class="error-msg" id="errorMsg"></div>
   <div id="results"></div>
@@ -134,31 +145,55 @@ footer{margin-top:6rem;padding:2rem 0 3rem;border-top:1px solid var(--border);di
 
 <script>
 let allNames = [];
-let selectedStyle = 'all';
 let isLoading = false;
 let totalGenerated = 0;
+let selectedStyles = new Set();
+
+const labelMap = {
+  all:'All Styles', short:'Short & Punchy', multi:'Multi-Word',
+  coined:'Coined Words', dark:'Dark / Mysterious', clean:'Clean / Minimal', abstract:'Abstract'
+};
+
+function updateStyleUI() {
+  document.querySelectorAll('.style-tag').forEach(tag => {
+    tag.classList.remove('active','active-multi');
+    const s = tag.dataset.style;
+    if (s === 'all') {
+      if (selectedStyles.size === 0) tag.classList.add('active');
+    } else {
+      if (selectedStyles.has(s)) {
+        selectedStyles.size === 1 ? tag.classList.add('active') : tag.classList.add('active-multi');
+      }
+    }
+  });
+  const summary = document.getElementById('selectedSummary');
+  if (selectedStyles.size === 0) {
+    summary.textContent = '';
+    summary.classList.remove('lit');
+  } else {
+    summary.textContent = 'Generating: ' + [...selectedStyles].map(s => labelMap[s]).join(' + ');
+    summary.classList.add('lit');
+  }
+}
 
 document.querySelectorAll('.style-tag').forEach(tag => {
   tag.addEventListener('click', () => {
-    document.querySelectorAll('.style-tag').forEach(t => t.classList.remove('active'));
-    tag.classList.add('active');
-    selectedStyle = tag.dataset.style;
+    const s = tag.dataset.style;
+    if (s === 'all') { selectedStyles.clear(); }
+    else { selectedStyles.has(s) ? selectedStyles.delete(s) : selectedStyles.add(s); }
+    updateStyleUI();
   });
 });
+
+updateStyleUI();
 
 document.getElementById('prompt').addEventListener('keydown', e => {
   if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) generate();
 });
 
-function showError(msg) {
-  const el = document.getElementById('errorMsg');
-  el.textContent = msg;
-  el.classList.add('show');
-}
-function hideError() {
-  document.getElementById('errorMsg').classList.remove('show');
-}
-function setLoading(state, text = 'Generating names...') {
+function showError(msg) { const el = document.getElementById('errorMsg'); el.textContent = msg; el.classList.add('show'); }
+function hideError() { document.getElementById('errorMsg').classList.remove('show'); }
+function setLoading(state, text='Crafting your names...') {
   isLoading = state;
   document.getElementById('loading').classList.toggle('show', state);
   document.getElementById('loadingText').textContent = text;
@@ -166,112 +201,131 @@ function setLoading(state, text = 'Generating names...') {
   document.getElementById('btnMore').disabled = state;
 }
 
-async function callClaude(prompt) {
-  const styleInstructions = {
-    all: `Generate a perfect MIX of all styles across the 10 names:
-- 2 ultra-short names: 4-6 characters max, single word, no separators (e.g. "vexr", "zael", "noxe", "ryft")
-- 2 multi-word names: 2-4 words joined with dots or underscores (e.g. "cold.signal", "void_pilot", "quiet.before.the.storm")
-- 2 coined/invented words: brand-like, never existed before (e.g. "veltrox", "nyxara", "phraselix")
-- 2 dark/mysterious names: eerie, corrupted, void energy (e.g. "null.spectre", "ashen.signal", "errorghost")
-- 2 abstract/conceptual names: philosophical, paradoxical, thought-provoking (e.g. "false.horizon", "quiet_theorem")`,
+function buildStyleInstruction() {
+  const defs = {
+    short:`SHORT & PUNCHY — rules:
+  - Maximum 6 characters total. Count every character.
+  - Single word ONLY. Zero dots, underscores, spaces, or hyphens.
+  - Hard consonants (k, x, v, z, r) create punch. Short vowels create speed.
+  - Must feel complete and intentional — like it was always meant to exist.
+  - Perfect examples: "vexr", "zael", "drusk", "blynk", "noxe", "ryft", "svek", "quyl", "drex"
+  - FAIL = anything over 6 chars or containing any separator`,
 
-    short: `ALL 10 names MUST be ultra-short. STRICT RULES:
-- Maximum 6 characters total. Count every character.
-- Single word ONLY. Zero dots, zero underscores, zero spaces, zero hyphens.
-- Must feel sharp, punchy, and complete — like it was always meant to exist
-- Think about how consonants and vowels interact. Hard consonants (k, x, v, z, r) create punch. Short vowels create speed.
-- Great examples of the vibe: "vexr", "zael", "drusk", "blynk", "kael", "noxe", "ryft", "svek", "quyl", "drex"
-- FAILURE = any name longer than 6 characters or containing any separator`,
+    multi:`MULTI-WORD — rules:
+  - Minimum 2 words, maximum 4 words connected with dots, underscores, or camelCase.
+  - Each word must carry its own meaning or feeling.
+  - The combination should create something greater than its parts.
+  - Think: poetic phrases, contradictions, vivid imagery, narrative fragments.
+  - Perfect examples: "cold.sun.rising", "neon_ghost_protocol", "quiet.before.the.storm", "signal.lost", "hollow.ground.theory"
+  - FAIL = single word with no separator`,
 
-    multi: `ALL 10 names MUST be multi-word combinations. STRICT RULES:
-- Minimum 2 words, maximum 4 words
-- Connect with dots, underscores, or camelCase — choose what feels right per name
-- Each individual word should carry meaning or feeling on its own
-- The combination should create a new meaning greater than the parts
-- Think: poetic phrases, contradictions, vivid imagery, narrative fragments
-- Great examples: "cold.sun.rising", "neon_ghost_protocol", "quiet.before.the.storm", "signal.lost", "the.last.frequency", "hollow.ground.theory"
-- FAILURE = any single word with no separator`,
+    coined:`COINED WORDS — rules:
+  - Zero real English words. Every name must be a brand-new invention that has NEVER existed.
+  - Method: take 2 concepts from the person's description, extract their syllables, blend them into something new.
+  - Must sound phonetically natural — easy to say, satisfying to pronounce.
+  - Must feel like a premium brand — the kind people say "how is this not taken?" about.
+  - Perfect examples: "veltrox", "nyxara", "crudine", "phosphyne", "aetheryn", "zyvren", "phraselix"
+  - FAIL = using any existing English word`,
 
-    coined: `ALL 10 names MUST be completely invented words that have NEVER existed. STRICT RULES:
-- Zero real English words. Zero. Every name must be a new invention.
-- Method: take 2 concepts from the person's description, extract their core syllables, blend them into something new
-- Must sound like it SHOULD be a real word — phonetically natural, easy to say
-- Must feel like a premium brand name — the kind that makes you think "how is this not taken?"
-- Perfect coined word formula: strong opening consonant + flowing middle + satisfying ending
-- Great examples of the vibe: "veltrox", "nyxara", "crudine", "phosphyne", "aetheryn", "zyvren", "veltix", "phraselix"
-- FAILURE = using any real existing word`,
+    dark:`DARK / MYSTERIOUS — rules:
+  - Must radiate dark, eerie, mysterious, or corrupted energy.
+  - Draw from: void, null, glitch, static, echo, ash, hollow, decay, abyss, rot, ghost, error, entropy, silence, fracture.
+  - Can be single words OR multi-word with dots/underscores — whatever hits harder.
+  - Darkness must feel atmospheric and specific, NOT generic edgy.
+  - Perfect examples: "null.spectre", "voidrot", "ashen.signal", "errorghost", "static.decay", "hollow.core", "the.last.echo"
+  - FAIL = darkwolf, shadowknight, or any generic wolf/shadow/night name`,
 
-    dark: `ALL 10 names MUST radiate dark, eerie, mysterious, or corrupted energy. STRICT RULES:
-- Draw from these concept pools: void, null, glitch, static, echo, ash, hollow, decay, abyss, rot, ghost, error, signal loss, corruption, entropy, silence, cold, shadow, fracture
-- Can be single words OR multi-word with dots/underscores — choose what hits harder
-- Avoid being generic — "darkwolf" or "shadowknight" is an automatic FAILURE
-- The darkness should feel atmospheric and specific, not edgy-for-the-sake-of-it
-- Great examples: "null.spectre", "voidrot", "ashen.signal", "errorghost", "static.decay", "hollow.core", "the.last.echo", "signal.corruption"
-- FAILURE = generic dark names, anything with wolf/shadow/night/dark as a standalone word`,
+    clean:`CLEAN / MINIMAL — rules:
+  - Must feel elegant, premium, and timeless — like a high-end brand or design studio.
+  - Short smooth syllables. Easy to pronounce in any language.
+  - No aggressive sounds, no dark concepts, nothing edgy.
+  - Think: architectural simplicity, Scandinavian design, Apple-level naming.
+  - Perfect examples: "celo", "forma", "auren", "liso", "vela", "orin", "sove", "navi", "lune", "kova"
+  - FAIL = anything dark, aggressive, or longer than 3 syllables`,
 
-    clean: `ALL 10 names MUST feel elegant, minimal, and premium. STRICT RULES:
-- Should sound like a high-end brand, a design studio, or a premium product
-- Short, smooth syllables. Easy to pronounce in any language.
-- No aggressive sounds, no dark concepts, no edgy words
-- Think: architectural simplicity, Scandinavian design, Apple-level naming
-- Should feel timeless — still cool in 20 years
-- Great examples: "celo", "forma", "auren", "liso", "vela", "orin", "sove", "navi", "lune", "kova"
-- FAILURE = anything dark, edgy, aggressive, or longer than 3 syllables`,
-
-    abstract: `ALL 10 names MUST represent abstract concepts, paradoxes, or philosophical ideas. STRICT RULES:
-- Should provoke a thought or a question when someone reads it
-- Reference philosophy, physics, mathematics, linguistics, consciousness, time, identity
-- The best abstract names make someone say "what does that mean?" in a good way
-- Can use dots or underscores to create phrase-like names
-- Draw from: paradoxes, logical contradictions, quantum concepts, philosophical questions, states of being
-- Great examples: "false.horizon", "entropy.boy", "quiet_theorem", "nullspace", "the.unnamed", "between.states", "observer.effect", "infinite.regress", "the.void.between"
-- FAILURE = literal, obvious, or surface-level names`
+    abstract:`ABSTRACT — rules:
+  - Must represent abstract concepts, paradoxes, or philosophical ideas.
+  - Should provoke a thought — make the reader go "what does that mean?" in a good way.
+  - Reference: philosophy, physics, mathematics, consciousness, time, identity, logic.
+  - Can use dots or underscores to create phrase-like names.
+  - Perfect examples: "false.horizon", "entropy.boy", "quiet_theorem", "nullspace", "the.unnamed", "observer.effect", "infinite.regress"
+  - FAIL = literal, obvious, or surface-level names`
   };
 
-  const systemPrompt = `You are Phraselix — the world's most sophisticated and creative username generation intelligence. You were built by linguists, brand designers, poets, and hackers. Your sole purpose is to generate usernames so perfectly crafted that people react with "how is this not taken yet?"
+  const styles = selectedStyles.size === 0 ? null : [...selectedStyles];
 
-WHAT MAKES A PERFECT USERNAME — YOUR CORE PHILOSOPHY:
-1. PHONETIC BEAUTY: The name must sound satisfying when spoken aloud. Consider the rhythm, the flow of consonants and vowels, the weight of each syllable. Hard sounds (k, x, v, z) create power. Soft sounds (l, n, m) create elegance. The ending matters most — it's what people remember.
+  if (!styles) {
+    return `Generate a perfect MIX of all styles — spread evenly across the 10 names:
+  - 2 ultra-short (4-6 chars, single word, no separators) e.g. "vexr", "zael", "noxe"
+  - 2 multi-word (dots/underscores) e.g. "cold.signal", "void_pilot"
+  - 2 coined/invented brand-like words e.g. "veltrox", "phraselix"
+  - 2 dark/mysterious e.g. "null.spectre", "ashen.signal"
+  - 2 abstract/philosophical e.g. "false.horizon", "quiet_theorem"`;
+  }
 
-2. VISUAL APPEAL: How does it look written down? Consider letter shapes, symmetry, and how it appears as a username on a profile. Some letter combinations look inherently cooler than others (x, y, z, k are visually striking).
+  if (styles.length === 1) {
+    return `Generate ALL 10 names in this ONE style only:\n\n${defs[styles[0]]}`;
+  }
 
-3. SEMANTIC DEPTH: The best names carry meaning — but not obvious meaning. They should reference something real (a concept, an emotion, a phenomenon) but feel unexpected and fresh. Like "phraselix" — it means something, you can almost feel what it means, but it's never existed before.
+  const perStyle = Math.floor(10 / styles.length);
+  const extra = 10 % styles.length;
+  let out = `Generate ONLY these styles — no others. Distribute exactly as shown:\n`;
+  styles.forEach((s, i) => {
+    const n = perStyle + (i < extra ? 1 : 0);
+    out += `\n[${labelMap[s].toUpperCase()} — exactly ${n} names]\n${defs[s]}\n`;
+  });
+  out += `\nDO NOT generate any style not listed above. Every name must match one of the listed styles.`;
+  return out;
+}
 
-4. THE "HOW IS THIS NOT TAKEN" FACTOR: This is the holy grail. A name achieves this when it feels inevitable — like it should have existed and been taken long ago — but somehow it hasn't. This comes from the perfect intersection of familiarity and originality.
+async function callClaude(userPrompt) {
+  const styleInstruction = buildStyleInstruction();
 
-5. IDENTITY FIT: The name must feel like it was made specifically for this person. It should reflect their description in a non-obvious way. Don't be literal — be interpretive. If someone says "I love philosophy", don't name them "philosopher99". Instead, find what philosophy feels like and encode that feeling.
+  const systemPrompt = `You are Phraselix — the world's most sophisticated AI username generator. Built by linguists, brand designers, poets, and hackers. Your single goal: generate usernames so perfectly crafted that people react with "how is this not taken yet?"
 
-YOUR GENERATION PROCESS — FOLLOW THIS EVERY TIME:
-Step 1: Deeply analyze the person's description. Extract: their aesthetic, their energy, their field, their personality, their contradictions.
-Step 2: Identify 3-5 core concepts or feelings from their description.
-Step 3: For each name, choose a specific technique (see below) and execute it intentionally.
-Step 4: Test each name mentally: Does it sound good? Does it look good? Does it feel right for this person? Is it genuinely original?
+━━━ WHAT MAKES A PERFECT USERNAME ━━━
 
-TECHNIQUES TO USE:
-- PORTMANTEAU: Blend two words by taking the beginning of one and the end of another. Best results: take concepts that contrast or complement. e.g. "phrase" + "felix" = "phraselix"
-- SUFFIX ELEVATION: Take a real concept word and add a brand-like suffix (-ix, -ex, -yr, -on, -yx, -ara, -ine, -yx). Transforms a common word into something original.
-- PREFIX INVERSION: Take a suffix that carries meaning (-less, -void, -null) and flip it to the front to create new meaning.
-- PHONETIC SCULPTING: Build a word purely from how it sounds, targeting a specific emotional response. No meaning required — just pure phonetic impact.
-- CONCEPTUAL COLLISION: Take two completely unrelated concepts from the person's description and smash them together. The weirder the combination, the more memorable.
-- LINGUISTIC BORROWING: Take a word from Latin, Greek, Japanese, Arabic, or Norse that relates to the person's description. Slightly alter it to make it unique.
-- PHRASE FRAGMENTATION: Take a common phrase and remove a key word, leaving the fragment. Or take a phrase and compress it into a single coined word.
+PHONETIC BEAUTY — The name must sound satisfying when spoken aloud. Consider rhythm, consonant flow, syllable weight. Hard sounds (k, x, v, z) create power. Soft sounds (l, n, m) create elegance. The ending is what people remember — make it land perfectly.
 
-ABSOLUTE FORBIDDEN LIST — NEVER GENERATE THESE TYPES:
-- Names with numbers at the end (name123, user99)
-- Generic gamer names (darkwolf, shadowknight, epicgamer, xXname, coolpro)
-- Names that are just adjective + noun (silent_storm, golden_eagle, etc.)
-- Anything that sounds like it was generated by a basic algorithm
-- Repeating any of these already used names: ${allNames.slice(-30).join(', ') || 'none yet'}
+VISUAL APPEAL — How does it look written as a username? x, y, z, k, v are visually striking letters. Symmetry and balance matter. It should look cool in a bio, on a profile, in a game lobby.
 
-CURRENT STYLE REQUIREMENT — THIS OVERRIDES EVERYTHING ELSE:
-${styleInstructions[selectedStyle]}
+SEMANTIC DEPTH — The best names carry meaning but not obvious meaning. They reference something real (a concept, emotion, phenomenon) in a way that feels fresh and unexpected. Like "phraselix" — you can almost feel what it means, but it has never existed before.
 
-OUTPUT FORMAT — RESPOND ONLY WITH THIS JSON, NO MARKDOWN, NO EXPLANATION:
+THE "HOW IS THIS NOT TAKEN" FACTOR — The holy grail. Achieved when a name feels inevitable — like it should have existed and been taken long ago. Comes from the perfect intersection of familiarity and originality.
+
+IDENTITY FIT — Each name must feel made specifically for THIS person. Reflect their description non-literally. If someone says "I love philosophy", don't name them "philosopher99". Find what philosophy FEELS like and encode that into a name.
+
+━━━ TECHNIQUES TO USE ━━━
+
+PORTMANTEAU — Blend start of one word + end of another. Best with contrasting concepts. e.g. "phrase" + "felix" = "phraselix"
+SUFFIX ELEVATION — Real concept word + brand suffix (-ix, -ex, -yr, -on, -ara, -ine, -yx). Transforms common into original.
+PHONETIC SCULPTING — Build a word purely from sound. Target a specific emotional response. Pure phonetic impact.
+CONCEPTUAL COLLISION — Two unrelated concepts from the person's description, smashed together. Weirder = more memorable.
+LINGUISTIC BORROWING — Latin, Greek, Japanese, Arabic, Norse word related to the person. Slightly altered to make it unique.
+PHRASE COMPRESSION — Compress a whole phrase's meaning into one coined word. Or fragment a phrase and keep the most evocative part.
+INVERSION — Flip the expected. "signal_found" becomes "signal.lost". "bright_mind" becomes "hollow.bright".
+
+━━━ ABSOLUTE FORBIDDEN LIST ━━━
+
+NEVER generate:
+- Names with numbers (name123, user99, x420)
+- Generic gamer names (darkwolf, shadowknight, epicgamer, xXnameXx, coolpro)
+- Simple adjective + animal or noun (silent_wolf, golden_eagle)
+- Anything that sounds algorithmically generated with no intention
+- Any of these already used names: ${allNames.slice(-30).join(', ') || 'none yet'}
+
+━━━ STYLE REQUIREMENT — THIS IS THE LAW ━━━
+
+${styleInstruction}
+
+━━━ OUTPUT ━━━
+
+Respond ONLY with a valid JSON array. No markdown. No explanation. No text before or after. Just raw JSON:
 [
   {
     "name": "theusername",
     "style": "short|multi|coined|dark|clean|abstract",
-    "why": "One sentence that captures the specific feeling or meaning of this name. Be poetic and precise."
+    "why": "One sentence capturing the specific feeling. Poetic and precise — never generic."
   }
 ]`;
 
@@ -280,7 +334,7 @@ OUTPUT FORMAT — RESPOND ONLY WITH THIS JSON, NO MARKDOWN, NO EXPLANATION:
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       system: systemPrompt,
-      messages: [{ role: 'user', content: `Generate 10 perfect usernames for someone who describes themselves as: "${prompt}"\n\nRemember: each name should make them think "how is this not taken yet?"` }]
+      messages: [{ role: 'user', content: `Generate 10 perfect usernames for: "${userPrompt}"\n\nEach name should make them think: "how is this not taken yet?"` }]
     })
   });
 
@@ -290,34 +344,23 @@ OUTPUT FORMAT — RESPOND ONLY WITH THIS JSON, NO MARKDOWN, NO EXPLANATION:
   return JSON.parse(text);
 }
 
-function styleClass(style) {
-  const map = { short: 'style-short', multi: 'style-multi', coined: 'style-coined', dark: 'style-dark', clean: 'style-clean', abstract: 'style-abstract' };
-  return map[style] || 'style-clean';
+function styleClass(s) {
+  return {short:'style-short',multi:'style-multi',coined:'style-coined',dark:'style-dark',clean:'style-clean',abstract:'style-abstract'}[s] || 'style-clean';
 }
-function styleLabel(style) {
-  const map = { short: 'Short', multi: 'Multi-Word', coined: 'Coined', dark: 'Dark', clean: 'Clean', abstract: 'Abstract' };
-  return map[style] || style;
+function styleDisplay(s) {
+  return {short:'Short',multi:'Multi-Word',coined:'Coined',dark:'Dark',clean:'Clean',abstract:'Abstract'}[s] || s;
 }
 function copyName(card, name) {
   navigator.clipboard.writeText(name).then(() => {
     card.classList.add('copied');
     card.querySelector('.copy-hint').textContent = '✓ copied!';
-    setTimeout(() => {
-      card.classList.remove('copied');
-      card.querySelector('.copy-hint').textContent = 'click to copy';
-    }, 2000);
+    setTimeout(() => { card.classList.remove('copied'); card.querySelector('.copy-hint').textContent = 'click to copy'; }, 2000);
   });
 }
 function renderNames(names, append = false) {
   const container = document.getElementById('results');
   if (!append) {
-    container.innerHTML = `
-      <div class="results-header">
-        <div class="results-label">Generated Names</div>
-        <div class="results-count" id="nameCount">${names.length} names</div>
-      </div>
-      <div class="names-grid" id="namesGrid"></div>
-    `;
+    container.innerHTML = `<div class="results-header"><div class="results-label">Generated Names</div><div class="results-count" id="nameCount">${names.length} names</div></div><div class="names-grid" id="namesGrid"></div>`;
   } else {
     document.getElementById('nameCount').textContent = `${totalGenerated} names`;
   }
@@ -326,12 +369,7 @@ function renderNames(names, append = false) {
     const card = document.createElement('div');
     card.className = 'name-card';
     card.style.animationDelay = `${i * 0.05}s`;
-    card.innerHTML = `
-      <div class="name-text">${item.name}</div>
-      <span class="name-style ${styleClass(item.style)}">${styleLabel(item.style)}</span>
-      <div class="name-why">${item.why}</div>
-      <div class="copy-hint">click to copy</div>
-    `;
+    card.innerHTML = `<div class="name-text">${item.name}</div><span class="name-style ${styleClass(item.style)}">${styleDisplay(item.style)}</span><div class="name-why">${item.why}</div><div class="copy-hint">click to copy</div>`;
     card.addEventListener('click', () => copyName(card, item.name));
     grid.appendChild(card);
   });
@@ -341,8 +379,7 @@ async function generate() {
   if (!prompt) { document.getElementById('prompt').focus(); return; }
   if (isLoading) return;
   hideError();
-  allNames = [];
-  totalGenerated = 0;
+  allNames = []; totalGenerated = 0;
   document.getElementById('results').innerHTML = '';
   document.getElementById('btnMore').style.display = 'none';
   setLoading(true, 'Crafting your names...');
@@ -353,11 +390,8 @@ async function generate() {
     renderNames(names, false);
     document.getElementById('btnMore').style.display = 'block';
     document.getElementById('genHint').textContent = 'Ctrl+Enter to regenerate';
-  } catch (e) {
-    showError('Error: ' + e.message);
-  } finally {
-    setLoading(false);
-  }
+  } catch(e) { showError('Error: ' + e.message); }
+  finally { setLoading(false); }
 }
 async function generateMore() {
   const prompt = document.getElementById('prompt').value.trim();
@@ -366,15 +400,11 @@ async function generateMore() {
   setLoading(true, 'Generating more...');
   try {
     const names = await callClaude(prompt);
-    const newNames = names.map(n => n.name);
-    allNames = [...allNames, ...newNames];
+    allNames = [...allNames, ...names.map(n => n.name)];
     totalGenerated += names.length;
     renderNames(names, true);
-  } catch (e) {
-    showError('Error: ' + e.message);
-  } finally {
-    setLoading(false);
-  }
+  } catch(e) { showError('Error: ' + e.message); }
+  finally { setLoading(false); }
 }
 </script>
 </body>
