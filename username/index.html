@@ -559,7 +559,13 @@ async function generateMore() {
   hideError();
   setLoading(true, 'Generating more...');
   try {
-    const names = await generateNames(prompt);
+    let names = await generateNames(prompt);
+    const existing = new Set(allNames.map(n => n.toLowerCase()));
+    names = names.filter(n => {
+      if (existing.has(n.name.toLowerCase())) return false;
+      existing.add(n.name.toLowerCase());
+      return true;
+    });
     allNames = [...allNames, ...names.map(n => n.name)];
     totalGenerated += names.length;
     renderNames(names, true);
