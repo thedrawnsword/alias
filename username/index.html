@@ -549,7 +549,7 @@ async function generate() {
     const seen = new Set();
     names = names.filter(n => { if (seen.has(n.name.toLowerCase())) return false; seen.add(n.name.toLowerCase()); return true; });
     allNames = names.map(n => n.name);
-    totalGenerated = names.length;
+    totalGenerated = allNames.length;
     renderNames(names, false);
     document.getElementById('btnMore').style.display = 'block';
     document.getElementById('genHint').textContent = 'Ctrl+Enter to regenerate';
@@ -570,8 +570,10 @@ async function generateMore() {
       return true;
     });
     allNames = [...allNames, ...names.map(n => n.name)];
-    totalGenerated += names.length;
+    totalGenerated = allNames.length;
     renderNames(names, true);
+    const countEl = document.getElementById('nameCount');
+    if (countEl) countEl.textContent = totalGenerated + ' names';
   } catch(e) { showError('Error: ' + e.message); }
   finally { setLoading(false); }
 }
