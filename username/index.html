@@ -541,7 +541,10 @@ async function generate() {
   document.getElementById('btnMore').style.display = 'none';
   setLoading(true, 'Crafting your names...');
   try {
-    const names = await generateNames(prompt);
+    let names = await generateNames(prompt);
+    // Remove duplicates by name
+    const seen = new Set();
+    names = names.filter(n => { if (seen.has(n.name.toLowerCase())) return false; seen.add(n.name.toLowerCase()); return true; });
     allNames = names.map(n => n.name);
     totalGenerated = names.length;
     renderNames(names, false);
