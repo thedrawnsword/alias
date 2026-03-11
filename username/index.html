@@ -90,6 +90,20 @@ textarea::placeholder{color:var(--text3)}
 .style-dark{background:rgba(255,71,87,.1);color:var(--red)}
 .style-abstract{background:rgba(167,139,250,.1);color:var(--purple)}
 
+
+/* ── Count picker ── */
+.count-section{margin:.8rem 0 1.5rem;}
+.count-hint{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:.7rem;}
+.count-hint span{color:var(--accent);opacity:.7}
+.count-row{display:flex;gap:.4rem;align-items:center;flex-wrap:wrap;}
+.count-btn{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:1px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border2);border-radius:3px;background:transparent;color:var(--text2);cursor:pointer;transition:all .15s;user-select:none;}
+.count-btn:hover{border-color:var(--accent);color:var(--accent);}
+.count-btn.active{background:var(--accent);color:var(--bg);border-color:var(--accent);font-weight:700;}
+.count-btn.locked{opacity:.3;cursor:not-allowed;position:relative;}
+.count-btn.locked:hover{border-color:var(--border2);color:var(--text2);}
+.count-divider{font-family:'DM Mono',monospace;font-size:.55rem;color:var(--text3);letter-spacing:1px;padding:0 .3rem;opacity:.5;}
+.count-locked-tip{font-family:'DM Mono',monospace;font-size:.52rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-top:.5rem;display:none;}
+.count-locked-tip.show{display:block;}
 /* ── Favorites ── */
 .fav-btn{position:absolute;top:.9rem;right:.9rem;background:none;border:none;cursor:pointer;font-size:1rem;opacity:.3;transition:opacity .2s,transform .2s;padding:.2rem;color:var(--accent);}
 .fav-btn:hover{opacity:.8;transform:scale(1.2);}
@@ -174,6 +188,23 @@ body{cursor:none;}
   <section class="input-section">
     <div class="prompt-label">Describe yourself, your vibe, or your brand</div>
     <textarea id="prompt" placeholder="Describe your vibe..." rows="4"></textarea>
+
+    <div class="count-section">
+      <div class="count-hint">How many names <span>— pick a number</span></div>
+      <div class="count-row">
+        <button class="count-btn" data-count="1">1</button>
+        <button class="count-btn" data-count="2">2</button>
+        <button class="count-btn" data-count="3">3</button>
+        <button class="count-btn" data-count="4">4</button>
+        <button class="count-btn active" data-count="5">5</button>
+        <button class="count-btn locked" data-count="6">6</button>
+        <button class="count-btn locked" data-count="7">7</button>
+        <button class="count-btn locked" data-count="8">8</button>
+        <button class="count-btn locked" data-count="9">9</button>
+        <button class="count-btn locked" data-count="10">10</button>
+      </div>
+      <div class="count-locked-tip" id="countLockedTip">✦ More names coming with premium — soon</div>
+    </div>
 
     <div class="style-section">
       <div class="style-hint">Style <span>— pick one or combine multiple</span></div>
@@ -588,6 +619,22 @@ document.addEventListener('touchstart', e => {
     }, 150);
   }
 }, { passive: true });
+
+
+// ── Count picker ──
+let selectedCount = 5;
+document.querySelectorAll('.count-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (btn.classList.contains('locked')) {
+      document.getElementById('countLockedTip').classList.add('show');
+      setTimeout(() => document.getElementById('countLockedTip').classList.remove('show'), 2500);
+      return;
+    }
+    document.querySelectorAll('.count-btn:not(.locked)').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedCount = parseInt(btn.dataset.count);
+  });
+});
 
 // ── Favorites Panel ──
 function openFavPanel() {
