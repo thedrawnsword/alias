@@ -252,8 +252,9 @@ header{
 .tool-card:hover::before{opacity:1;}
 .tool-card:hover::after{transform:scaleX(1);}
 .tool-card:hover .tool-arrow{transform:translate(4px,-4px);opacity:1;}
-.tool-card:hover .tool-num{opacity:.25;}
-.tool-card:not(.coming-soon) .tool-num{opacity:.12;}
+.tool-card:hover .tool-num{opacity:.9;text-shadow:0 0 30px rgba(232,255,71,.8),0 0 80px rgba(232,255,71,.3);}
+.tool-card:not(.coming-soon) .tool-num{opacity:.6;text-shadow:0 0 20px rgba(232,255,71,.5),0 0 50px rgba(232,255,71,.2);}
+.tool-card.coming-soon .tool-num{opacity:.15;text-shadow:none;}
 
 .tool-card.coming-soon{cursor:default;}
 .tool-card.coming-soon:hover::after{transform:scaleX(0);}
@@ -264,9 +265,9 @@ header{
   font-family:'Bebas Neue',sans-serif;
   font-size:3.5rem;
   line-height:1;
-  color:var(--text);
-  opacity:.06;
-  transition:opacity .3s;
+  color:var(--accent);
+  opacity:.35;
+  transition:opacity .3s,text-shadow .3s;
   position:absolute;
   top:1.5rem;right:1.8rem;
   letter-spacing:2px;
