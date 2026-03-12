@@ -473,7 +473,7 @@ function buildSystemPrompt() {
     twitter: `X/TWITTER RULES: The title IS the tweet. Max 240 chars but shorter wins. Conversational. 1-2 hashtags MAX. Leave an open loop that forces people to click "read more".`
   };
 
-  return `You are the best title writer on the internet. You write titles that make people stop scrolling and need to click.
+  return `You are an expert at writing video titles that get clicks. You understand that different videos need different title styles — a fight animation needs a different title than a vlog or tutorial.
 
 Platform: ${platformNames[selectedPlatform]}
 Tone: ${selectedTone}
@@ -481,40 +481,46 @@ Tone: ${selectedTone}
 ${platformRules[selectedPlatform]}
 ${toneGuides[selectedTone]}
 
-CRITICAL RULE — WRITE ABOUT THE VIDEO, NOT A POV OF THE VIEWER:
-The title must be FROM THE CREATOR about their video. NOT a "POV:" format unless the user's video is literally a POV video.
-- WRONG: "POV: you watch two characters fight" — this is describing watching the video
-- WRONG: "POV: you're animating at 3am" — this is a viewer POV, not about the video
-- RIGHT: "I animated two characters fighting for 3 months" — this is FROM the creator
-- RIGHT: "nobody told me animating fights would take THIS long" — creator voice
-- RIGHT: "this fight scene almost made me quit animation" — creator stakes
+THE MOST IMPORTANT RULE — MATCH THE TITLE STYLE TO THE VIDEO TYPE:
+Read the video description carefully. Then decide what kind of title fits:
 
-The title should answer: "What is the CREATOR telling me about THEIR video?" — not "what is the viewer experiencing?"
+TYPE A — CONTENT TITLES (for animations, short films, music videos, skits, fight scenes):
+The title names or teases WHAT HAPPENS in the video, not the making process.
+✅ "The Last Stand" — fight animation
+✅ "Two Rivals. One Battle." — fight animation  
+✅ "The Final Clash" — fight animation
+✅ "When Two Worlds Collide" — fight animation
+✅ "Animation vs. Minecraft" — Alan Becker style
+✅ "The Confrontation" — cinematic short
+These feel like MOVIE TITLES, not diary entries.
 
-MORE GREAT FORMULAS:
-- "I [extreme verb] [thing] [twist]" → "I almost deleted 3 months of animation work"
-- "[Number] + [thing] + [curiosity hook]" → "600 frames. one punch. here's why it took 2 weeks"
-- "Nobody told me [truth]" → "Nobody told me 2D animation fights take this long"
-- "Stop [doing thing]" → "Stop animating fight scenes until you watch this"
-- "[Time] on [specific thing]" → "72 hours on a 4-second fight scene"
-- "[Thing] + [unexpected result]" → "I animated two characters fighting and it broke my brain"
+TYPE B — CREATOR STORY TITLES (for vlogs, devlogs, tutorials, behind the scenes):
+The title is FROM THE CREATOR about their experience making the video.
+✅ "I spent 3 months on this fight scene"
+✅ "nobody told me animation would feel like this"
+✅ "72 hours. one punch. here's what happened"
 
-NEVER WRITE:
-- Describing the video like Wikipedia ("Creating a fight scene animation", "Two characters in combat")
-- Generic titles ("My animation process", "How I make videos")
-- POV format UNLESS the video is literally a POV video
-- Fake hype ("This will CHANGE YOUR LIFE", "INSANE results")
+HOW TO CHOOSE:
+- If the video IS the content (animation, skit, short film) → use TYPE A or MIX
+- If the video is ABOUT making something → use TYPE B
+- If unsure → give a mix of both types
+
+NEVER:
+- POV format unless it's literally a POV video
+- Wikipedia descriptions ("Two characters engage in combat")
+- Generic process titles for content videos ("my fight animation")
+- Fake hype ("INSANE", "you won't believe", "life-changing")
 
 Respond ONLY with valid JSON, nothing else, no markdown:
-{"titles":["title1","title2"],"hashtags":["#tag1","#tag2","#tag3","#tag4","#tag5","#tag6"],"caption":"1-2 sentence ready-to-post caption that sounds like a real human wrote it."}`;
+{"titles":["title1","title2"],"hashtags":["#tag1","#tag2","#tag3","#tag4","#tag5","#tag6"],"caption":"1-2 sentence ready-to-post caption that sounds human."}`;
 }
 
 function buildUserMsg(prompt) {
-  return `Video idea: "${prompt}"
+  return `Video: "${prompt}"
 Platform: ${platformNames[selectedPlatform]}
 Tone: ${selectedTone}
 
-Write exactly ${selectedCount} titles FROM THE CREATOR'S PERSPECTIVE about their own video. Each title must use a completely DIFFERENT formula — vary the angle, structure, and emotion. No POV format unless the video itself is a POV.`;
+First figure out what TYPE of video this is (animation/short film/content vs vlog/tutorial/process video). Then write exactly ${selectedCount} titles that match that type. Each title must feel completely different in structure and angle. No POV format unless the video is literally a POV.`;
 }
 // ── Render ──
 function renderResults(data) {
