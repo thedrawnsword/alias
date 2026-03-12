@@ -473,7 +473,7 @@ function buildSystemPrompt() {
     twitter: `X/TWITTER RULES: The title IS the tweet. Max 240 chars but shorter wins. Conversational. 1-2 hashtags MAX. Leave an open loop that forces people to click "read more".`
   };
 
-  return `You are an expert at writing video titles that get clicks. You understand that different videos need different title styles — a fight animation needs a different title than a vlog or tutorial.
+  return `You are an expert at writing video titles that get clicks. You know that different videos need different title styles.
 
 Platform: ${platformNames[selectedPlatform]}
 Tone: ${selectedTone}
@@ -481,38 +481,26 @@ Tone: ${selectedTone}
 ${platformRules[selectedPlatform]}
 ${toneGuides[selectedTone]}
 
-THE MOST IMPORTANT RULE — MATCH THE TITLE STYLE TO THE VIDEO TYPE:
-Read the video description carefully. Then decide what kind of title fits:
+CRITICAL: MATCH THE TITLE STYLE TO WHAT THE VIDEO ACTUALLY IS.
 
-TYPE A — CONTENT TITLES (for animations, short films, music videos, skits, fight scenes):
-The title names or teases WHAT HAPPENS in the video, not the making process.
-✅ "The Last Stand" — fight animation
-✅ "Two Rivals. One Battle." — fight animation  
-✅ "The Final Clash" — fight animation
-✅ "When Two Worlds Collide" — fight animation
-✅ "Animation vs. Minecraft" — Alan Becker style
-✅ "The Confrontation" — cinematic short
-These feel like MOVIE TITLES, not diary entries.
+If the video IS the content itself (animation, fight scene, short film, skit, music video):
+- Write titles like MOVIE or SHOW titles that tease what happens
+- Examples for a fight animation: "The Last Stand", "Two Rivals. One Battle.", "The Final Clash", "No Mercy", "Outmatched"
+- Think Alan Becker: "Animation vs. Minecraft" not "I spent months animating Minecraft"
+- The title should make someone want to WATCH the thing, not read about the making
 
-TYPE B — CREATOR STORY TITLES (for vlogs, devlogs, tutorials, behind the scenes):
-The title is FROM THE CREATOR about their experience making the video.
-✅ "I spent 3 months on this fight scene"
-✅ "nobody told me animation would feel like this"
-✅ "72 hours. one punch. here's what happened"
+If the video is ABOUT making something (devlog, vlog, tutorial, behind the scenes):
+- Write from the creator perspective about their experience
+- Examples: "I spent 3 months on this fight scene", "72 hours on one animation"
 
-HOW TO CHOOSE:
-- If the video IS the content (animation, skit, short film) → use TYPE A or MIX
-- If the video is ABOUT making something → use TYPE B
-- If unsure → give a mix of both types
+NEVER write:
+- POV format unless the video is literally a POV video
+- Wikipedia style ("Two characters engage in combat")
+- Generic process titles for content videos
+- Fake hype words like INSANE, life-changing, you won't believe
 
-NEVER:
-- POV format unless it's literally a POV video
-- Wikipedia descriptions ("Two characters engage in combat")
-- Generic process titles for content videos ("my fight animation")
-- Fake hype ("INSANE", "you won't believe", "life-changing")
-
-Respond ONLY with valid JSON, nothing else, no markdown:
-{"titles":["title1","title2"],"hashtags":["#tag1","#tag2","#tag3","#tag4","#tag5","#tag6"],"caption":"1-2 sentence ready-to-post caption that sounds human."}`;
+Respond ONLY with valid JSON, no markdown, no extra text:
+{"titles":["title1","title2"],"hashtags":["#tag1","#tag2","#tag3","#tag4","#tag5","#tag6"],"caption":"Short ready-to-post caption, sounds human."}`;
 }
 
 function buildUserMsg(prompt) {
@@ -520,7 +508,7 @@ function buildUserMsg(prompt) {
 Platform: ${platformNames[selectedPlatform]}
 Tone: ${selectedTone}
 
-First figure out what TYPE of video this is (animation/short film/content vs vlog/tutorial/process video). Then write exactly ${selectedCount} titles that match that type. Each title must feel completely different in structure and angle. No POV format unless the video is literally a POV.`;
+Decide if this is a content video (animation, short film, fight scene) or a process video (vlog, tutorial, devlog). Then write exactly ${selectedCount} titles that fit. Make each title feel different in structure and angle. No POV unless the video is a POV video.`;
 }
 // ── Render ──
 function renderResults(data) {
