@@ -512,7 +512,7 @@ function renderNames(names, append = false) {
     card.innerHTML = `<button class="fav-btn ${isFaved ? 'saved' : ''}" title="Save to favorites">&#9829;</button><div class="name-text">${item.name}</div><span class="name-style ${styleClass(item.style)}">${styleDisplay(item.style)}</span><div class="name-why">${item.why}</div><div class="copy-hint">click to copy</div>`;
     card.querySelector('.fav-btn').addEventListener('click', (e) => { e.stopPropagation(); toggleFav(card, item); });
     card.addEventListener('click', () => copyName(card, item.name));
-    if (append) grid.appendChild(card);
+    if (append) grid.insertBefore(card, grid.firstChild);
     else grid.appendChild(card);
   });
   setTimeout(() => {
@@ -586,26 +586,29 @@ async function generateMore() {
   // retrying up to MAX_RETRIES times total before giving up.
   const MAX_RETRIES = 5;
   let attempt = 0;
-  let collected = []; // fresh unique names accumulated across retries
-  const existingSet = new Set(allNames.map(n => n.toLowerCase()));
+  let collected = [];
 
   setLoading(true, 'Generating more...');
   try {
     while (collected.length < selectedCount && attempt < MAX_RETRIES) {
       attempt++;
       const needed = selectedCount - collected.length;
-      // Ask for more than needed to increase chance of getting enough fresh ones
       const askFor = Math.min(needed + 3, selectedCount * 2);
 
       document.getElementById('loadingText').textContent =
-        attempt === 1 ? 'Generating more...' : `Getting ${needed} more fresh names...`;
+        attempt === 1 ? 'Generating more...' : `Getting ${needed} more unique names...`;
 
       let names = await generateNames(prompt, askFor);
 
+      // Build the exclusion set fresh each iteration from the live allNames array.
+      // allNames grows as we collect, so each retry's forbidden list is up to date
+      // and the model stops re-suggesting names it already gave us this session.
+      const excluded = new Set(allNames.map(n => n.toLowerCase()));
+
       for (const n of names) {
         const key = n.name.toLowerCase();
-        if (!existingSet.has(key)) {
-          existingSet.add(key);
+        if (!excluded.has(key)) {
+          allNames.push(n.name); // update allNames NOW so next retry sees it
           collected.push(n);
           if (collected.length === selectedCount) break;
         }
@@ -617,8 +620,6 @@ async function generateMore() {
       return;
     }
 
-    // Add however many we got (up to selectedCount) — always at least 1
-    allNames = [...allNames, ...collected.map(n => n.name)];
     totalGenerated = allNames.length;
     renderNames(collected, true);
     const countEl = document.getElementById('nameCount');
