@@ -91,10 +91,6 @@ textarea::placeholder{color:var(--text3)}
 .name-card:hover .copy-hint{color:var(--accent)}
 .name-card.copied .copy-hint{color:var(--accent)}
 .type-title{background:rgba(78,205,196,.1);color:var(--blue)}
-.type-hashtags{background:rgba(167,139,250,.1);color:var(--purple)}
-.tags-wrap{display:flex;flex-wrap:wrap;gap:.4rem;margin:.2rem 0;}
-.tag-pill{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:1px;padding:.25rem .6rem;border:1px solid var(--border2);border-radius:2px;cursor:pointer;transition:all .15s;color:var(--text2);}
-.tag-pill:hover{border-color:var(--accent);color:var(--accent);background:rgba(232,255,71,.05);}
 .fav-btn{position:absolute;top:.9rem;right:.9rem;background:none;border:none;cursor:pointer;font-size:1rem;opacity:.3;transition:opacity .2s,transform .2s;padding:.2rem;color:var(--accent);}
 .fav-btn:hover{opacity:.8;transform:scale(1.2);}
 .fav-btn.saved{opacity:1;transform:scale(1.1);}
@@ -359,7 +355,7 @@ NEVER write:
 - Fake hype: INSANE, life-changing, you won't believe
 
 Respond ONLY with valid JSON, no markdown, no extra text:
-{"titles":["title1","title2","title3"],"hashtags":["#tag1","#tag2","#tag3","#tag4","#tag5","#tag6"]}`;}
+{"titles":["title1","title2","title3"]}`;}
 
 function buildUserMsg(prompt) {
   return `Video: "${prompt}"
@@ -429,13 +425,6 @@ function renderResults(data) {
     grid.appendChild(makeCard('title', 'Hook ' + (i + 1), title, 'type-title'));
   });
 
-  if (data.hashtags && data.hashtags.length) {
-    const card = document.createElement('div');
-    card.className = 'name-card';
-    card.innerHTML = `<div class="name-style type-hashtags">Hashtags</div><div class="tags-wrap">${data.hashtags.map(t => `<span class="tag-pill" onclick="copyTag(this,'${t}')">${t}</span>`).join('')}</div><div class="copy-hint">click a tag to copy it</div>`;
-    grid.appendChild(card);
-  }
-
   document.getElementById('hookCount').textContent = totalGenerated + ' hooks';
   updateFavBar();
 }
@@ -451,19 +440,12 @@ function appendResults(data) {
   allTitles = [...allTitles, ...fresh];
   totalGenerated = allTitles.length;
 
-  fresh.forEach((title, i) => {
-    grid.appendChild(makeCard('title', 'Hook ' + (allTitles.length - fresh.length + i + 1), title, 'type-title'));
+  // insert new cards at the TOP, above existing ones
+  [...fresh].reverse().forEach((title, i) => {
+    const num = allTitles.length - i;
+    const card = makeCard('title', 'Hook ' + num, title, 'type-title');
+    grid.insertBefore(card, grid.firstChild);
   });
-
-  if (data.hashtags && data.hashtags.length) {
-    // replace existing hashtag card
-    const old = grid.querySelector('.type-hashtags')?.closest('.name-card');
-    if (old) old.remove();
-    const card = document.createElement('div');
-    card.className = 'name-card';
-    card.innerHTML = `<div class="name-style type-hashtags">Hashtags</div><div class="tags-wrap">${data.hashtags.map(t => `<span class="tag-pill" onclick="copyTag(this,'${t}')">${t}</span>`).join('')}</div><div class="copy-hint">click a tag to copy it</div>`;
-    grid.appendChild(card);
-  }
 
   const countEl = document.getElementById('hookCount');
   if (countEl) countEl.textContent = totalGenerated + ' hooks';
@@ -550,14 +532,6 @@ if (sharedParam) {
   grid.className = 'names-grid';
   items.forEach((content, i) => grid.appendChild(makeCard('title', 'Shared Title ' + (i+1), content, 'type-title')));
   document.getElementById('results').appendChild(grid);
-}
-
-function copyTag(el, tag) {
-  navigator.clipboard.writeText(tag).then(() => {
-    el.style.background = 'rgba(232,255,71,.15)';
-    showToast(tag + ' copied!');
-    setTimeout(() => el.style.background = '', 1500);
-  });
 }
 
 function setLoading(state, text) {
