@@ -422,7 +422,7 @@ function renderResults(data) {
   totalGenerated = newTitles.length;
 
   newTitles.forEach((title, i) => {
-    grid.appendChild(makeCard('title', 'Title ' + (i + 1), title, 'type-title'));
+    grid.appendChild(makeCard('title', toneLabel, title, 'type-title'));
   });
 
   document.getElementById('titleCount').textContent = totalGenerated + ' titles';
@@ -434,6 +434,7 @@ function appendResults(data) {
   if (!grid) { renderResults(data); return; }
 
   const newTitles = (data.titles || []).slice(0, selectedCount);
+  const toneLabel = selectedTone.charAt(0).toUpperCase() + selectedTone.slice(1);
   // dedupe against already shown
   const existing = new Set(allTitles.map(t => t.toLowerCase()));
   const fresh = newTitles.filter(t => !existing.has(t.toLowerCase()));
@@ -443,7 +444,7 @@ function appendResults(data) {
   // insert new cards at the TOP, above existing ones
   [...fresh].reverse().forEach((title, i) => {
     const num = allTitles.length - i;
-    const card = makeCard('title', 'Title ' + num, title, 'type-title');
+    const card = makeCard('title', toneLabel, title, 'type-title');
     grid.insertBefore(card, grid.firstChild);
   });
 
@@ -530,7 +531,7 @@ if (sharedParam) {
   document.getElementById('sharedBanner').classList.add('show');
   const grid = document.createElement('div');
   grid.className = 'names-grid';
-  items.forEach((content, i) => grid.appendChild(makeCard('title', 'Shared Title ' + (i+1), content, 'type-title')));
+  items.forEach((content, i) => grid.appendChild(makeCard('title', 'Title', content, 'type-title')));
   document.getElementById('results').appendChild(grid);
 }
 
