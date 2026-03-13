@@ -159,8 +159,8 @@ body{cursor:none;}
   </header>
 
   <div class="hero-tagline">
-    <div class="tagline-text">Titles that make people <em>stop.</em></div>
-    <div class="tagline-sub">Describe your video. Get scroll-stopping titles people actually click.</div>
+    <div class="tagline-text" id="taglineText">Titles that make people <em>stop.</em></div>
+    <div class="tagline-meta">ps — your next title is one click away</div>
   </div>
 
   <div class="shared-banner" id="sharedBanner">✦ Someone shared these titles with you</div>
@@ -238,6 +238,18 @@ body{cursor:none;}
 <div class="toast" id="toast"></div>
 
 <script>
+// ── Rotating taglines ──
+const taglines = [
+  'Titles that make people <em>stop.</em>',
+  'Your video deserves a title that <em>hits.</em>',
+  'Stop using boring titles. Get ones that <em>click.</em>',
+  'Describe the video. Get the hook that <em>works.</em>',
+  'Every scroll is a chance to <em>grab attention.</em>',
+  'The title is the thumbnail for your <em>words.</em>',
+  'Make them click before they even <em>think.</em>',
+];
+document.getElementById('taglineText').innerHTML = taglines[Math.floor(Math.random() * taglines.length)];
+
 let selectedTone = 'viral';
 let selectedCount = 3;
 let isLoading = false;
