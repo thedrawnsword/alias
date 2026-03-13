@@ -412,10 +412,36 @@ async function callAPI(systemPrompt, userMsg) {
 }
 
 // ── Generate ──
+function isBadInput(text) {
+  const t = text.toLowerCase();
+  const banned = [
+    'porn','porno','pornstar','pornhub','onlyfans','only fans','sex','sexy','sexual',
+    'nude','naked','nsfw','xxx','18+','adult','explicit','erotic','hentai',
+    'horny','boob','boobs','tit','tits','dick','cock','pussy','vagina','penis',
+    'anal','blowjob','handjob','cumshot','orgasm','fetish','bdsm','kink',
+    'stripper','escort','prostitute','hooker','camgirl','webcam model',
+    'fuck','shit','bitch','cunt','asshole','bastard','slut','whore',
+    'nigga','nigger','faggot','retard','piss','crap',
+    'kill','murder','rape','suicide','terrorist','nazis','nazi','racist','racism',
+    'genocide','pedophile','pedo','molest','abuse',
+  ];
+  for (const word of banned) { if (t.includes(word)) return true; }
+  const leet = text.toLowerCase()
+    .replace(/0/g,'o').replace(/1/g,'i').replace(/3/g,'e')
+    .replace(/4/g,'a').replace(/5/g,'s').replace(/8/g,'b')
+    .replace(/\$/g,'s').replace(/@/g,'a').replace(/!/g,'i');
+  for (const word of banned) { if (leet.includes(word)) return true; }
+  return false;
+}
+
 async function generate() {
   const prompt = document.getElementById('prompt').value.trim();
   if (!prompt) { document.getElementById('prompt').focus(); return; }
   if (isLoading) return;
+  if (isBadInput(prompt)) {
+    showError("Keep it clean — Phraselix isn't that kind of tool.");
+    return;
+  }
 
   setLoading(true, 'Crafting your titles...');
   hideError();
