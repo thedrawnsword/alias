@@ -3,12 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Phraselix</title>
+<title>Phraselix — Tools</title>
 <link rel="icon" type="image/png" href="/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;0,500&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
-
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
@@ -24,659 +23,149 @@
 }
 
 html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;min-height:100vh;overflow-x:hidden;cursor:none;}
+@media(hover:none),(max-width:600px){body{cursor:auto;}.cursor,.cursor-ring{display:none;}}
 
-body{
-  background:var(--bg);
-  color:var(--text);
-  font-family:'Syne',sans-serif;
-  min-height:100vh;
-  overflow-x:hidden;
-  cursor:none;
-}
+.ripple{position:fixed;border-radius:50%;background:rgba(232,255,71,.35);pointer-events:none;z-index:9999;transform:translate(-50%,-50%) scale(0);animation:rippleOut .5s cubic-bezier(.16,1,.3,1) forwards;}
+@keyframes rippleOut{0%{width:10px;height:10px;opacity:1;transform:translate(-50%,-50%) scale(0);}100%{width:80px;height:80px;opacity:0;transform:translate(-50%,-50%) scale(1);}}
 
-@media(hover:none),(max-width:600px){
-  body{cursor:auto;}
-  .cursor,.cursor-ring{display:none;}
-}
-
-.ripple{
-  position:fixed;
-  border-radius:50%;
-  background:rgba(232,255,71,.35);
-  pointer-events:none;
-  z-index:9999;
-  transform:translate(-50%,-50%) scale(0);
-  animation:rippleOut .5s cubic-bezier(.16,1,.3,1) forwards;
-}
-
-@keyframes rippleOut{
-  0%{width:10px;height:10px;opacity:1;transform:translate(-50%,-50%) scale(0);}
-  100%{width:80px;height:80px;opacity:0;transform:translate(-50%,-50%) scale(1);}
-}
-
-.cursor{
-  position:fixed;
-  width:8px;
-  height:8px;
-  background:var(--accent);
-  border-radius:50%;
-  pointer-events:none;
-  z-index:9999;
-  transform:translate(-50%,-50%);
-  transition:width .2s,height .2s;
-  mix-blend-mode:difference;
-}
-
-.cursor-ring{
-  position:fixed;
-  width:32px;
-  height:32px;
-  border:1px solid rgba(232,255,71,.3);
-  border-radius:50%;
-  pointer-events:none;
-  z-index:9998;
-  transform:translate(-50%,-50%);
-  transition:width .3s,height .3s,border-color .3s;
-}
-
+.cursor{position:fixed;width:8px;height:8px;background:var(--accent);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .2s,height .2s;mix-blend-mode:difference;}
+.cursor-ring{position:fixed;width:32px;height:32px;border:1px solid rgba(232,255,71,.3);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .3s,height .3s,border-color .3s;}
 .cursor.hover{width:16px;height:16px;}
 .cursor-ring.hover{width:48px;height:48px;border-color:rgba(232,255,71,.6);}
 
-body::before{
-  content:'';
-  position:fixed;
-  inset:0;
-  z-index:0;
-  pointer-events:none;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
-}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");}
+body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background:linear-gradient(rgba(232,255,71,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(232,255,71,.018) 1px,transparent 1px);background-size:80px 80px;}
 
-body::after{
-  content:'';
-  position:fixed;
-  inset:0;
-  z-index:0;
-  pointer-events:none;
-  background:
-    linear-gradient(rgba(232,255,71,.018) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(232,255,71,.018) 1px,transparent 1px);
-  background-size:80px 80px;
-}
-
-.blob{
-  position:fixed;
-  border-radius:50%;
-  filter:blur(120px);
-  pointer-events:none;
-  z-index:0;
-  animation:drift 20s ease-in-out infinite;
-}
-
+.blob{position:fixed;border-radius:50%;filter:blur(120px);pointer-events:none;z-index:0;animation:drift 20s ease-in-out infinite;}
 .blob1{width:600px;height:600px;background:rgba(232,255,71,.04);top:-200px;right:-100px;}
 .blob2{width:400px;height:400px;background:rgba(100,150,255,.03);bottom:-100px;left:-100px;animation-delay:-8s;}
 .blob3{width:300px;height:300px;background:rgba(232,255,71,.025);top:50%;left:50%;animation-delay:-4s;}
+@keyframes drift{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(30px,-20px) scale(1.05)}66%{transform:translate(-20px,30px) scale(.95)}}
 
-@keyframes drift{
-  0%,100%{transform:translate(0,0) scale(1)}
-  33%{transform:translate(30px,-20px) scale(1.05)}
-  66%{transform:translate(-20px,30px) scale(.95)}
-}
+.scanline{position:fixed;inset:0;z-index:999;pointer-events:none;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.015) 2px,rgba(0,0,0,.015) 4px);}
 
-.scanline{
-  position:fixed;
-  inset:0;
-  z-index:999;
-  pointer-events:none;
-  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.015) 2px,rgba(0,0,0,.015) 4px);
-}
-
-.wrap{
-  position:relative;
-  z-index:1;
-  width:min(1600px, 92vw);
-  margin:0 auto;
-  padding:0;
-}
+.wrap{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:0 2rem;}
 
 /* ── Header ── */
-header{
-  padding:3.5rem 0 0;
-  display:grid;
-  grid-template-columns:1fr auto;
-  align-items:end;
-  gap:2rem;
-}
-
-.brand-logo{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:clamp(1.8rem, 3.2vw, 3.1rem);
-  letter-spacing:4px;
-  line-height:1;
-  color:var(--accent);
-  text-shadow:0 0 80px rgba(232,255,71,.25);
-}
-
-.brand-tag{
-  font-family:'DM Mono',monospace;
-  font-size:.6rem;
-  letter-spacing:4px;
-  text-transform:uppercase;
-  color:var(--text2);
-  margin-top:.4rem;
-}
-
-.header-meta{
-  font-family:'DM Mono',monospace;
-  font-size:.58rem;
-  letter-spacing:2px;
-  text-transform:uppercase;
-  color:var(--text3);
-  text-align:right;
-  line-height:2;
-  padding-bottom:.4rem;
-}
-
+header{padding:3.5rem 0 0;display:grid;grid-template-columns:1fr auto;align-items:end;gap:2rem;}
+.brand-logo{font-family:'Bebas Neue',sans-serif;font-size:clamp(3.5rem,7vw,6rem);letter-spacing:5px;line-height:1;color:var(--accent);text-shadow:0 0 80px rgba(232,255,71,.25);}
+.brand-tag{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:4px;text-transform:uppercase;color:var(--text2);margin-top:.4rem;}
+.header-meta{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:2px;text-transform:uppercase;color:var(--text3);text-align:right;line-height:2;padding-bottom:.4rem;}
 .header-meta span{color:var(--accent);opacity:.6;}
 
-.divider{
-  height:1px;
-  background:linear-gradient(90deg,transparent,var(--border2),var(--accent),var(--border2),transparent);
-  opacity:.4;
-  margin:2.5rem 0;
-}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border2),var(--accent),var(--border2),transparent);opacity:.4;margin:2.5rem 0;}
 
-/* ── Hero ── */
-.hero{
-  padding:3rem 4rem;
+/* ── Hero + Featured side by side ── */
+.hero-featured{
   display:grid;
-  grid-template-columns:minmax(420px, 620px) minmax(180px, 260px);
-  justify-content:space-between;
-  gap:3rem;
-  align-items:center;
-}
-
-.hero-left{
-  max-width:520px;
-}
-
-.hero-title{
-  font-size:clamp(1.9rem, 3.2vw, 3rem);
-  font-weight:800;
-  line-height:1;
-  letter-spacing:-1px;
-  margin-bottom:1rem;
-  max-width:10ch;
-}
-
-.hero-title em{
-  font-style:normal;
-  color:var(--accent);
-  text-shadow:0 0 40px rgba(232,255,71,.3);
-}
-
-.hero-desc{
-  font-family:'DM Mono',monospace;
-  font-size:.64rem;
-  color:var(--text2);
-  line-height:1.7;
-  letter-spacing:.3px;
-  max-width:30ch;
-}
-
-.hero-right{
-  display:flex;
-  flex-direction:column;
-  gap:1.5rem;
-  align-items:flex-start;
-  justify-self:start;
-  padding-top:2rem;
-}
-
-.stat-num{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:2.2rem;
-  letter-spacing:2px;
-  line-height:1;
-  color:var(--text);
-  opacity:.15;
-}
-
-.stat-label{
-  font-family:'DM Mono',monospace;
-  font-size:.5rem;
-  letter-spacing:2px;
-  text-transform:uppercase;
-  color:var(--text3);
-}
-
-/* ── Section label ── */
-.section-label{
-  font-family:'DM Mono',monospace;
-  font-size:.6rem;
-  letter-spacing:4px;
-  text-transform:uppercase;
-  color:var(--text3);
-  display:flex;
-  align-items:center;
-  gap:1rem;
-  margin-bottom:2rem;
-}
-
-.section-label::before{content:'//';color:var(--accent);opacity:.5;}
-.section-label::after{content:'';flex:1;height:1px;background:var(--border2);}
-
-/* ── Grid ── */
-.tools-grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:1px;
-  background:var(--border);
+  grid-template-columns:1fr 1fr;
+  gap:0;
+  align-items:stretch;
+  padding:4rem 0 3rem;
   border:1px solid var(--border);
   border-radius:6px;
   overflow:hidden;
-}
-
-/* ── Base card ── */
-.tool-card{
   background:var(--card);
-  padding:2.2rem 2rem;
-  display:flex;
-  flex-direction:column;
-  gap:1.2rem;
-  cursor:pointer;
-  position:relative;
-  overflow:hidden;
-  transition:background .2s;
-  text-decoration:none;
-  color:inherit;
+  margin-bottom:1px;
 }
 
-.tool-card::before{
-  content:'';
-  position:absolute;
-  inset:0;
-  background:linear-gradient(135deg,rgba(232,255,71,.04),transparent);
-  opacity:0;
-  transition:opacity .3s;
-}
-
-.tool-card::after{
-  content:'';
-  position:absolute;
-  top:0;
-  left:0;
-  right:0;
-  height:2px;
-  background:var(--accent);
-  transform:scaleX(0);
-  transform-origin:left;
-  transition:transform .4s cubic-bezier(.16,1,.3,1);
-}
-
-.tool-card:hover{background:#0f1118;}
-.tool-card:hover::before{opacity:1;}
-.tool-card:hover::after{transform:scaleX(1);}
-.tool-card:hover .tool-arrow{transform:translate(4px,-4px);opacity:1;}
-
-.tool-num{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:3.5rem;
-  line-height:1;
-  color:var(--accent);
-  opacity:.2;
-  position:absolute;
-  top:1.5rem;
-  right:1.8rem;
-  letter-spacing:2px;
-  transition:opacity .3s,text-shadow .3s;
-}
-
-.tool-card:hover .tool-num{
-  opacity:.8;
-  text-shadow:0 0 30px rgba(232,255,71,.6);
-}
-
-.tool-icon{
-  width:40px;
-  height:40px;
-  border:1px solid var(--border2);
-  border-radius:4px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:1.2rem;
-  background:rgba(232,255,71,.03);
-  transition:border-color .2s,background .2s;
-  flex-shrink:0;
-}
-
-.tool-card:hover .tool-icon{
-  border-color:rgba(232,255,71,.2);
-  background:rgba(232,255,71,.06);
-}
-
-.tool-name{
-  font-size:1.25rem;
-  font-weight:700;
-  letter-spacing:-.5px;
-  margin-bottom:.5rem;
-  color:var(--text);
-}
-
-.tool-desc{
-  font-family:'DM Mono',monospace;
-  font-size:.62rem;
-  color:var(--text2);
-  line-height:1.8;
-  letter-spacing:.3px;
-  max-width:34ch;
-}
-
-.tool-footer{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin-top:.5rem;
-}
-
-.tool-tag{
-  font-family:'DM Mono',monospace;
-  font-size:.52rem;
-  letter-spacing:2px;
-  text-transform:uppercase;
-  padding:.2rem .6rem;
-  border-radius:2px;
-  border:1px solid var(--border2);
-  color:var(--text3);
-}
-
-.tool-tag.live{
-  border-color:rgba(232,255,71,.25);
-  color:rgba(232,255,71,.6);
-}
-
-.tool-tag.live::before{
-  content:'● ';
-  font-size:.4rem;
-  vertical-align:middle;
-}
-
-.tool-arrow{
-  font-size:1rem;
-  color:var(--accent);
-  opacity:0;
-  transition:transform .2s,opacity .2s;
-}
-
-/* ── Featured card ── */
-.tool-card.featured{
-  grid-column:1 / -1;
-  flex-direction:row;
-  align-items:stretch;
-  gap:0;
-  padding:0;
-  border-bottom:1px solid var(--border);
-}
-
-.tool-card.featured::after{height:3px;}
-
-.tool-card.featured .tool-num{
-  font-size:7rem;
-  top:auto;
-  bottom:1.5rem;
-  right:2rem;
-  opacity:.1;
-  letter-spacing:4px;
-}
-
-.tool-card.featured:hover .tool-num{opacity:.5;}
-
-.feat-left{
-  flex:0 0 clamp(250px, 30vw, 340px);
-  min-width:0;
-  padding:2.5rem 2.4rem;
+/* Left: hero text */
+.hero-left{
+  padding:3rem 3rem 3rem 3rem;
   display:flex;
   flex-direction:column;
   justify-content:space-between;
   border-right:1px solid var(--border2);
 }
+.hero-title{font-size:clamp(2.2rem,3.5vw,3.2rem);font-weight:800;line-height:1.15;letter-spacing:-1px;margin-bottom:1.6rem;}
+.hero-title em{font-style:normal;color:var(--accent);text-shadow:0 0 40px rgba(232,255,71,.3);}
+.hero-desc{font-family:'DM Mono',monospace;font-size:.7rem;color:var(--text2);line-height:2;letter-spacing:.5px;}
 
-.feat-eyebrow{
-  font-family:'DM Mono',monospace;
-  font-size:.52rem;
-  letter-spacing:4px;
-  text-transform:uppercase;
-  color:var(--accent);
-  opacity:.65;
-  margin-bottom:1rem;
-}
-
-.feat-name{
-  font-size:2.2rem;
-  font-weight:800;
-  letter-spacing:-1px;
-  line-height:1.05;
-  color:var(--text);
-  margin-bottom:1.5rem;
-  max-width:9ch;
-}
-
-.feat-bottom{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-}
-
-.feat-arrow-box{
-  width:44px;
-  height:44px;
-  border:1px solid rgba(232,255,71,.2);
-  border-radius:4px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:1.2rem;
-  color:var(--accent);
-  transition:background .2s,border-color .2s,transform .2s;
-}
-
-.tool-card.featured:hover .feat-arrow-box{
-  background:rgba(232,255,71,.08);
-  border-color:rgba(232,255,71,.5);
-  transform:translate(3px,-3px);
-}
-
-.feat-right{
-  flex:1;
-  min-width:0;
-  padding:2.5rem 2.8rem 2.5rem 2.5rem;
+/* Right: featured card */
+.feat-card{
+  background:var(--card);
+  padding:3rem 3rem;
   display:flex;
   flex-direction:column;
   justify-content:space-between;
   position:relative;
+  overflow:hidden;
+  text-decoration:none;
+  color:inherit;
+  cursor:pointer;
+  transition:background .2s;
 }
+.feat-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(232,255,71,.04),transparent);opacity:0;transition:opacity .3s;}
+.feat-card::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .4s cubic-bezier(.16,1,.3,1);}
+.feat-card:hover{background:#0f1118;}
+.feat-card:hover::before{opacity:1;}
+.feat-card:hover::after{transform:scaleX(1);}
+.feat-card:hover .feat-arrow-box{background:rgba(232,255,71,.08);border-color:rgba(232,255,71,.5);transform:translate(3px,-3px);}
+.feat-card:hover .feat-num{opacity:.5;text-shadow:0 0 30px rgba(232,255,71,.6);}
 
-.feat-desc{
-  font-family:'DM Mono',monospace;
-  font-size:.68rem;
-  color:var(--text2);
-  line-height:2;
-  letter-spacing:.3px;
-  max-width:46ch;
-}
-
-.feat-proof{
-  font-family:'DM Mono',monospace;
-  font-size:.58rem;
-  letter-spacing:1.5px;
-  color:var(--text3);
-  margin-top:1.2rem;
-  border-left:2px solid rgba(232,255,71,.15);
-  padding-left:.9rem;
-  line-height:2;
-  max-width:44ch;
-}
-
+.feat-num{font-family:'Bebas Neue',sans-serif;font-size:6rem;line-height:1;color:var(--accent);opacity:.1;position:absolute;bottom:1.5rem;right:2rem;letter-spacing:4px;transition:opacity .3s,text-shadow .3s;}
+.feat-eyebrow{font-family:'DM Mono',monospace;font-size:.52rem;letter-spacing:4px;text-transform:uppercase;color:var(--accent);opacity:.65;margin-bottom:1rem;}
+.feat-name{font-size:2rem;font-weight:800;letter-spacing:-1px;line-height:1.05;color:var(--text);margin-bottom:1.5rem;}
+.feat-desc{font-family:'DM Mono',monospace;font-size:.65rem;color:var(--text2);line-height:2;letter-spacing:.3px;margin-bottom:1.5rem;}
+.feat-proof{font-family:'DM Mono',monospace;font-size:.56rem;letter-spacing:1.5px;color:var(--text3);border-left:2px solid rgba(232,255,71,.15);padding-left:.9rem;line-height:2;margin-bottom:2rem;}
 .feat-proof em{font-style:normal;color:rgba(232,255,71,.45);}
+.feat-bottom{display:flex;align-items:center;justify-content:space-between;}
+.feat-arrow-box{width:44px;height:44px;border:1px solid rgba(232,255,71,.2);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:var(--accent);transition:background .2s,border-color .2s,transform .2s;}
+
+/* ── Section label ── */
+.section-label{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:4px;text-transform:uppercase;color:var(--text3);display:flex;align-items:center;gap:1rem;margin-bottom:2rem;margin-top:3rem;}
+.section-label::before{content:'//';color:var(--accent);opacity:.5;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border2);}
+
+/* ── Grid ── */
+.tools-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:6px;overflow:hidden;}
+
+/* ── Base card ── */
+.tool-card{background:var(--card);padding:2.2rem 2rem;display:flex;flex-direction:column;gap:1.2rem;cursor:pointer;position:relative;overflow:hidden;transition:background .2s;text-decoration:none;color:inherit;}
+.tool-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(232,255,71,.04),transparent);opacity:0;transition:opacity .3s;}
+.tool-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .4s cubic-bezier(.16,1,.3,1);}
+.tool-card:hover{background:#0f1118;}
+.tool-card:hover::before{opacity:1;}
+.tool-card:hover::after{transform:scaleX(1);}
+.tool-card:hover .tool-arrow{transform:translate(4px,-4px);opacity:1;}
+
+.tool-num{font-family:'Bebas Neue',sans-serif;font-size:3.5rem;line-height:1;color:var(--accent);opacity:.2;position:absolute;top:1.5rem;right:1.8rem;letter-spacing:2px;transition:opacity .3s,text-shadow .3s;}
+.tool-card:hover .tool-num{opacity:.8;text-shadow:0 0 30px rgba(232,255,71,.6);}
+
+.tool-icon{width:40px;height:40px;border:1px solid var(--border2);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;background:rgba(232,255,71,.03);transition:border-color .2s,background .2s;flex-shrink:0;}
+.tool-card:hover .tool-icon{border-color:rgba(232,255,71,.2);background:rgba(232,255,71,.06);}
+
+.tool-name{font-size:1.25rem;font-weight:700;letter-spacing:-.5px;margin-bottom:.5rem;color:var(--text);}
+.tool-desc{font-family:'DM Mono',monospace;font-size:.62rem;color:var(--text2);line-height:1.8;letter-spacing:.3px;}
+
+.tool-footer{display:flex;align-items:center;justify-content:space-between;margin-top:.5rem;}
+.tool-tag{font-family:'DM Mono',monospace;font-size:.52rem;letter-spacing:2px;text-transform:uppercase;padding:.2rem .6rem;border-radius:2px;border:1px solid var(--border2);color:var(--text3);}
+.tool-tag.live{border-color:rgba(232,255,71,.25);color:rgba(232,255,71,.6);}
+.tool-tag.live::before{content:'● ';font-size:.4rem;vertical-align:middle;}
+.tool-arrow{font-size:1rem;color:var(--accent);opacity:0;transition:transform .2s,opacity .2s;}
 
 /* ── Bottom ── */
-.bottom-strip{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:2rem 0 4rem;
-  margin-top:1rem;
-}
-
-.bottom-left{
-  font-family:'DM Mono',monospace;
-  font-size:.58rem;
-  color:var(--text3);
-  letter-spacing:2px;
-  text-transform:uppercase;
-  line-height:2;
-}
-
+.bottom-strip{display:flex;align-items:center;justify-content:space-between;padding:2rem 0 4rem;margin-top:1rem;}
+.bottom-left{font-family:'DM Mono',monospace;font-size:.58rem;color:var(--text3);letter-spacing:2px;text-transform:uppercase;line-height:2;}
 .bottom-left span{color:var(--accent);opacity:.5;}
-
-.bottom-right{
-  font-family:'DM Mono',monospace;
-  font-size:.55rem;
-  color:var(--text3);
-  letter-spacing:1.5px;
-  text-transform:uppercase;
-  text-align:right;
-  line-height:2.2;
-}
+.bottom-right{font-family:'DM Mono',monospace;font-size:.55rem;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;text-align:right;line-height:2.2;}
 
 /* ── Reveal ── */
-.reveal{
-  opacity:0;
-  transform:translateY(24px);
-  transition:opacity .6s cubic-bezier(.16,1,.3,1),transform .6s cubic-bezier(.16,1,.3,1);
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .6s cubic-bezier(.16,1,.3,1),transform .6s cubic-bezier(.16,1,.3,1);}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+@media(max-width:768px){
+  .hero-featured{grid-template-columns:1fr;}
+  .hero-left{border-right:none;border-bottom:1px solid var(--border2);padding:2.5rem 2rem;}
+  .feat-card{padding:2.5rem 2rem;}
+  .tools-grid{grid-template-columns:repeat(2,1fr);}
 }
-
-.reveal.visible{
-  opacity:1;
-  transform:translateY(0);
-}
-
-/* ── Responsive ── */
-@media(max-width:980px){
-  .hero{
-    grid-template-columns:1fr;
-    gap:2rem;
-    padding:3rem 2rem;
-  }
-
-  .hero-right{
-    display:none;
-  }
-
-  .tools-grid{
-    grid-template-columns:repeat(2,1fr);
-  }
-
-  .tool-card.featured{
-    flex-direction:column;
-  }
-
-  .feat-left{
-    flex:none;
-    border-right:none;
-    border-bottom:1px solid var(--border2);
-    padding:2rem 2rem 1.5rem;
-  }
-
-  .feat-right{
-    padding:1.5rem 2rem 2rem;
-  }
-}
-
-@media (max-aspect-ratio: 4/3){
-  .hero{
-    grid-template-columns:1fr;
-  }
-
-  .hero-right{
-    display:none;
-  }
-
-  .tool-card.featured{
-    flex-direction:column;
-  }
-
-  .feat-left{
-    border-right:none;
-    border-bottom:1px solid var(--border2);
-  }
-}
-
-@media(max-width:700px){
-  .wrap{
-    padding:0 1rem;
-  }
-
-  .tools-grid{
-    grid-template-columns:1fr;
-  }
-
-  header{
-    grid-template-columns:1fr;
-  }
-
-  .header-meta{
-    text-align:left;
-  }
-
-  .bottom-strip{
-    flex-direction:column;
-    align-items:flex-start;
-    gap:1rem;
-  }
-
-  .bottom-right{
-    text-align:left;
-  }
-
-  .hero{
-    padding:2rem 1rem 2.5rem;
-  }
-
-  .hero-title{
-    font-size:clamp(2.2rem, 10vw, 3.4rem);
-    max-width:8.5ch;
-  }
-
-  .hero-desc{
-    max-width:none;
-  }
-
-  .feat-name{
-    max-width:none;
-  }
-}
-
 @media(max-width:600px){
-  .brand-logo{
-    letter-spacing:3px;
-  }
-
-  .tool-card{
-    padding:1.6rem 1.3rem;
-  }
-
-  .feat-left,
-  .feat-right{
-    padding-left:1.3rem;
-    padding-right:1.3rem;
-  }
-
-  .tool-card.featured .tool-num{
-    font-size:5.5rem;
-    right:1rem;
-    bottom:.8rem;
-  }
+  .tools-grid{grid-template-columns:1fr;}
+  header{grid-template-columns:1fr;}
+  .header-meta{text-align:left;}
+  .bottom-strip{flex-direction:column;align-items:flex-start;gap:1rem;}
 }
 </style>
 </head>
@@ -705,64 +194,54 @@ header{
 
   <div class="divider"></div>
 
-  <section class="hero reveal">
+  <!-- Hero text + Featured card side by side -->
+  <div class="hero-featured reveal">
+
+    <!-- Left: hero copy -->
     <div class="hero-left">
-      <div class="hero-title">
-        Tools built for people who care about <em>identity.</em>
-      </div>
-      <div class="hero-desc">
-        A growing suite of AI-powered tools.<br>
-        Every tool is obsessed with one thing —<br>
-        making you sound like yourself,<br>
-        but better.
+      <div>
+        <div class="hero-title">
+          Tools built for<br>
+          people who care<br>
+          about <em>identity.</em>
+        </div>
+        <div class="hero-desc">
+          A growing suite of AI-powered tools.<br>
+          Every tool is obsessed with one thing —<br>
+          making you sound like yourself,<br>
+          but better.
+        </div>
       </div>
     </div>
 
-    <div class="hero-right">
-      <div class="stat">
-        <div class="stat-num">07</div>
-        <div class="stat-label">Tools live now</div>
+    <!-- Right: 01 featured card -->
+    <a class="feat-card" href="/username">
+      <div class="feat-num">01</div>
+      <div>
+        <div class="feat-eyebrow">The Foundation</div>
+        <div class="feat-name">Username<br>Generator</div>
+        <div class="feat-desc">
+          Your name is your first impression — before the bio,
+          before the content, before the audience. Describe your
+          vibe and get usernames so good you'll wonder how
+          they're not already taken.
+        </div>
+        <div class="feat-proof">
+          We named ourselves with this exact tool.<br>
+          <em>Phraselix — born right here.</em>
+        </div>
       </div>
-      <div class="stat">
-        <div class="stat-num">0</div>
-        <div class="stat-label">Generic results, ever</div>
+      <div class="feat-bottom">
+        <span class="tool-tag live">Live</span>
+        <div class="feat-arrow-box">↗</div>
       </div>
-    </div>
-  </section>
+    </a>
+
+  </div>
 
   <div class="section-label reveal">Available Tools</div>
 
   <div class="tools-grid reveal">
-
-    <a class="tool-card featured" href="/username">
-      <div class="tool-num">01</div>
-
-      <div class="feat-left">
-        <div>
-          <div class="feat-eyebrow">The Foundation</div>
-          <div class="feat-name">Username<br>Generator</div>
-        </div>
-        <div class="feat-bottom">
-          <span class="tool-tag live">Live</span>
-          <div class="feat-arrow-box">↗</div>
-        </div>
-      </div>
-
-      <div class="feat-right">
-        <div>
-          <div class="feat-desc">
-            Your name is your first impression — before the bio,
-            before the content, before the audience. Describe your
-            vibe and get usernames so good you'll wonder how
-            they're not already taken.
-          </div>
-          <div class="feat-proof">
-            We named ourselves with this exact tool.<br>
-            <em>Phraselix — born right here.</em>
-          </div>
-        </div>
-      </div>
-    </a>
 
     <a class="tool-card" href="/hooks">
       <div class="tool-num">02</div>
@@ -771,10 +250,7 @@ header{
         <div class="tool-name">Title Generator</div>
         <div class="tool-desc">Titles that stop the scroll and get the click every single time.</div>
       </div>
-      <div class="tool-footer">
-        <span class="tool-tag live">Live</span>
-        <span class="tool-arrow">↗</span>
-      </div>
+      <div class="tool-footer"><span class="tool-tag live">Live</span><span class="tool-arrow">↗</span></div>
     </a>
 
     <a class="tool-card" href="/bio">
@@ -784,10 +260,7 @@ header{
         <div class="tool-name">Bio Generator</div>
         <div class="tool-desc">A bio that sounds like you. For Instagram, TikTok, X, YouTube and LinkedIn.</div>
       </div>
-      <div class="tool-footer">
-        <span class="tool-tag live">Live</span>
-        <span class="tool-arrow">↗</span>
-      </div>
+      <div class="tool-footer"><span class="tool-tag live">Live</span><span class="tool-arrow">↗</span></div>
     </a>
 
     <a class="tool-card" href="/caption">
@@ -797,10 +270,7 @@ header{
         <div class="tool-name">Caption Generator</div>
         <div class="tool-desc">Captions that stop the scroll. Viral, funny, emotional, aesthetic or minimal.</div>
       </div>
-      <div class="tool-footer">
-        <span class="tool-tag live">Live</span>
-        <span class="tool-arrow">↗</span>
-      </div>
+      <div class="tool-footer"><span class="tool-tag live">Live</span><span class="tool-arrow">↗</span></div>
     </a>
 
     <a class="tool-card" href="/scripthook">
@@ -810,10 +280,7 @@ header{
         <div class="tool-name">Script Hook Generator</div>
         <div class="tool-desc">The first 3 seconds that make people stay and watch your entire video.</div>
       </div>
-      <div class="tool-footer">
-        <span class="tool-tag live">Live</span>
-        <span class="tool-arrow">↗</span>
-      </div>
+      <div class="tool-footer"><span class="tool-tag live">Live</span><span class="tool-arrow">↗</span></div>
     </a>
 
     <a class="tool-card" href="/hashtag">
@@ -823,10 +290,7 @@ header{
         <div class="tool-name">Hashtag Generator</div>
         <div class="tool-desc">Strategic hashtag sets that actually reach your niche and grow your account.</div>
       </div>
-      <div class="tool-footer">
-        <span class="tool-tag live">Live</span>
-        <span class="tool-arrow">↗</span>
-      </div>
+      <div class="tool-footer"><span class="tool-tag live">Live</span><span class="tool-arrow">↗</span></div>
     </a>
 
     <a class="tool-card" href="/ideas">
@@ -836,97 +300,45 @@ header{
         <div class="tool-name">Content Ideas</div>
         <div class="tool-desc">Never run out of ideas. Specific concepts for your niche, not generic topics.</div>
       </div>
-      <div class="tool-footer">
-        <span class="tool-tag live">Live</span>
-        <span class="tool-arrow">↗</span>
-      </div>
+      <div class="tool-footer"><span class="tool-tag live">Live</span><span class="tool-arrow">↗</span></div>
     </a>
 
   </div>
 
   <div class="bottom-strip reveal">
-    <div class="bottom-left">
-      Phraselix<br>
-      Free to use <span>—</span> No account needed
-    </div>
-    <div class="bottom-right">
-      Every tool. One obsession.<br>
-      Sound like yourself.
-    </div>
+    <div class="bottom-left">Phraselix<br>Free to use <span>—</span> No account needed</div>
+    <div class="bottom-right">Every tool. One obsession.<br>Sound like yourself.</div>
   </div>
 
 </div>
 
 <script>
-const cursor = document.getElementById('cursor');
-const ring = document.getElementById('cursorRing');
-
-let mx = 0;
-let my = 0;
-let rx = 0;
-let ry = 0;
-
-document.addEventListener('mousemove', e => {
-  mx = e.clientX;
-  my = e.clientY;
-  cursor.style.left = mx + 'px';
-  cursor.style.top = my + 'px';
+const cursor=document.getElementById('cursor');
+const ring=document.getElementById('cursorRing');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx+'px';cursor.style.top=my+'px';});
+(function animateRing(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animateRing);})();
+document.querySelectorAll('a,button').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cursor.classList.add('hover');ring.classList.add('hover');});
+  el.addEventListener('mouseleave',()=>{cursor.classList.remove('hover');ring.classList.remove('hover');});
 });
 
-(function animateRing(){
-  rx += (mx - rx) * 0.12;
-  ry += (my - ry) * 0.12;
-  ring.style.left = rx + 'px';
-  ring.style.top = ry + 'px';
-  requestAnimationFrame(animateRing);
-})();
+document.addEventListener('touchstart',e=>{
+  const t=e.touches[0],r=document.createElement('div');
+  r.className='ripple';r.style.left=t.clientX+'px';r.style.top=t.clientY+'px';
+  document.body.appendChild(r);setTimeout(()=>r.remove(),500);
+},{passive:true});
 
-document.querySelectorAll('a,button').forEach(el => {
-  el.addEventListener('mouseenter', () => {
-    cursor.classList.add('hover');
-    ring.classList.add('hover');
-  });
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('visible'),i*80);observer.unobserve(e.target);}});
+},{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
 
-  el.addEventListener('mouseleave', () => {
-    cursor.classList.remove('hover');
-    ring.classList.remove('hover');
-  });
-});
-
-document.addEventListener('touchstart', e => {
-  const t = e.touches[0];
-  const r = document.createElement('div');
-  r.className = 'ripple';
-  r.style.left = t.clientX + 'px';
-  r.style.top = t.clientY + 'px';
-  document.body.appendChild(r);
-  setTimeout(() => r.remove(), 500);
-}, { passive:true });
-
-const observer = new IntersectionObserver(entries => {
-  entries.forEach((entry, i) => {
-    if(entry.isIntersecting){
-      setTimeout(() => {
-        entry.target.classList.add('visible');
-      }, i * 80);
-      observer.unobserve(entry.target);
-    }
-  });
-}, { threshold:0.1 });
-
-document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-document.querySelectorAll('.tool-card').forEach((card, i) => {
-  card.style.opacity = '0';
-  card.style.transform = 'translateY(20px)';
-  card.style.transition = `opacity .5s ease ${i * 0.07}s, transform .5s cubic-bezier(.16,1,.3,1) ${i * 0.07}s, background .2s`;
-
-  setTimeout(() => {
-    card.style.opacity = '1';
-    card.style.transform = 'translateY(0)';
-  }, 400 + i * 70);
+document.querySelectorAll('.tool-card').forEach((card,i)=>{
+  card.style.opacity='0';card.style.transform='translateY(20px)';
+  card.style.transition=`opacity .5s ease ${i*.07}s,transform .5s cubic-bezier(.16,1,.3,1) ${i*.07}s,background .2s`;
+  setTimeout(()=>{card.style.opacity='1';card.style.transform='translateY(0)';},400+i*70);
 });
 </script>
-
 </body>
 </html>
