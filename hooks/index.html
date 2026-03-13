@@ -92,7 +92,6 @@ textarea::placeholder{color:var(--text3)}
 .name-card.copied .copy-hint{color:var(--accent)}
 .type-title{background:rgba(78,205,196,.1);color:var(--blue)}
 .type-hashtags{background:rgba(167,139,250,.1);color:var(--purple)}
-.type-caption{background:rgba(232,255,71,.1);color:var(--accent)}
 .tags-wrap{display:flex;flex-wrap:wrap;gap:.4rem;margin:.2rem 0;}
 .tag-pill{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:1px;padding:.25rem .6rem;border:1px solid var(--border2);border-radius:2px;cursor:pointer;transition:all .15s;color:var(--text2);}
 .tag-pill:hover{border-color:var(--accent);color:var(--accent);background:rgba(232,255,71,.05);}
@@ -392,11 +391,15 @@ async function generateMore() {
   const prompt = document.getElementById('prompt').value.trim();
   if (!prompt || isLoading) return;
   hideError();
-  setLoading(true, 'Generating fresh hooks...');
-  document.getElementById('results').innerHTML = '';
+  setLoading(true, 'Generating more hooks...');
+  // collect already shown titles so AI avoids repeats
+  const existing = [...document.querySelectorAll('.name-text')].map(el => el.textContent).join(' | ');
+  const extraInstruction = existing
+    ? '\n\nAlready shown titles (do NOT repeat these, generate completely different ones):\n' + existing
+    : '\n\nGenerate completely different titles from any previous set.';
   try {
-    const result = await callAPI(buildSystemPrompt(), buildUserMsg(prompt) + '\n\nGenerate completely different titles from any previous set.');
-    renderResults(result);
+    const result = await callAPI(buildSystemPrompt(), buildUserMsg(prompt) + extraInstruction);
+    appendResults(result);
   } catch(e) {
     showError('Something went wrong — try again.');
   } finally {
@@ -436,10 +439,37 @@ function renderResults(data) {
   updateFavBar();
 }
 
+function appendResults(data) {
+  // get existing grid or bail
+  const grid = document.getElementById('titlesGrid');
+  if (!grid) { renderResults(data); return; }
+
+  // divider
+  const divider = document.createElement('div');
+  divider.style.cssText = 'grid-column:1/-1;border-top:1px solid var(--border);margin:.5rem 0;';
+  grid.appendChild(divider);
+
+  const existingCount = grid.querySelectorAll('.name-card').length;
+  if (data.titles && data.titles.length) {
+    data.titles.slice(0, selectedCount).forEach((title, i) => {
+      const card = makeCard('title', 'Title ' + (existingCount + i + 1), title, 'type-title');
+      grid.appendChild(card);
+    });
+  }
+
+  if (data.hashtags && data.hashtags.length) {
+    const card = document.createElement('div');
+    card.className = 'name-card';
+    card.innerHTML = `<div class="name-style type-hashtags">Hashtags</div><div class="tags-wrap">${data.hashtags.map(t => `<span class="tag-pill" onclick="copyTag(this,'${t}')">${t}</span>`).join('')}</div><div class="copy-hint">click a tag to copy it</div>`;
+    grid.appendChild(card);
+  }
+
+  updateFavBar();
+}
+
 function makeCard(type, label, content, typeClass) {
   const card = document.createElement('div');
   card.className = 'name-card';
-  card.style.animationDelay = (type === 'caption' ? 0.35 : 0) + 's';
   const item = { type, label, content };
   const isFaved = getFavs().some(f => f.content === content);
   card.innerHTML = `<button class="fav-btn ${isFaved ? 'saved' : ''}" title="Save to favorites">♥</button><div class="name-style ${typeClass}">${label}</div><div class="name-text">${content}</div><div class="copy-hint">click to copy</div>`;
