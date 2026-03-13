@@ -282,24 +282,24 @@ const placeholders = [
 document.getElementById('prompt').placeholder = placeholders[Math.floor(Math.random() * placeholders.length)];
 
 function isBadInput(text) {
-  const t = text.toLowerCase();
   const banned = [
-    'porn','porno','pornstar','pornhub','onlyfans','only fans','sex','sexy','sexual',
-    'nude','naked','nsfw','xxx','18+','adult','explicit','erotic','hentai',
-    'horny','boob','boobs','tit','tits','dick','cock','pussy','vagina','penis',
-    'anal','blowjob','handjob','cumshot','orgasm','fetish','bdsm','kink',
-    'stripper','escort','prostitute','hooker','camgirl','webcam model',
+    'porn','porno','pornstar','pornhub','onlyfans','sex','sexy','sexual',
+    'nude','naked','nsfw','xxx','erotic','hentai',
+    'horny','boobs','tits','dick','cock','pussy','vagina','penis',
+    'blowjob','handjob','cumshot','orgasm','fetish','bdsm',
+    'stripper','escort','prostitute','hooker','camgirl',
     'fuck','shit','bitch','cunt','asshole','bastard','slut','whore',
-    'nigga','nigger','faggot','retard','piss','crap',
-    'kill','murder','rape','suicide','terrorist','nazis','nazi','racist','racism',
-    'genocide','pedophile','pedo','molest','abuse',
+    'nigga','nigger','faggot','retard',
+    'murder','rape','suicide','terrorist','nazis','nazi','racist','racism',
+    'genocide','pedophile','pedo','molest',
   ];
-  for (const word of banned) { if (t.includes(word)) return true; }
-  const leet = text.toLowerCase()
-    .replace(/0/g,'o').replace(/1/g,'i').replace(/3/g,'e')
+  const wb = (t, w) => new RegExp('\\b' + w + '\\b').test(t);
+  const t = text.toLowerCase();
+  for (const word of banned) { if (wb(t, word)) return true; }
+  const leet = t.replace(/0/g,'o').replace(/1/g,'i').replace(/3/g,'e')
     .replace(/4/g,'a').replace(/5/g,'s').replace(/8/g,'b')
     .replace(/\$/g,'s').replace(/@/g,'a').replace(/!/g,'i');
-  for (const word of banned) { if (leet.includes(word)) return true; }
+  for (const word of banned) { if (wb(leet, word)) return true; }
   return false;
 }
 
