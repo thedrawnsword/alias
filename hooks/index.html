@@ -8,13 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#06070a;--bg2:#0d0f14;--bg3:#13161e;
-  --border:#1e2230;--border2:#2a2f42;
-  --accent:#e8ff47;--accent2:#c8e000;
-  --text:#eeeef5;--text2:#7a7f9a;--text3:#4a4f66;
-  --red:#ff4757;--blue:#4ecdc4;--purple:#a78bfa;--orange:#ff8c42;
-}
+:root{--bg:#06070a;--bg2:#0d0f14;--bg3:#13161e;--border:#1e2230;--border2:#2a2f42;--accent:#e8ff47;--accent2:#c8e000;--text:#eeeef5;--text2:#7a7f9a;--text3:#4a4f66;--red:#ff4757;--blue:#4ecdc4;--purple:#a78bfa;--orange:#ff8c42;}
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;}
 body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");opacity:.4;}
@@ -23,13 +17,16 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;back
 header{padding:1.4rem 0;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);margin-bottom:0;}
 .logo{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:4px;line-height:1;color:var(--accent);opacity:.65;transition:opacity .2s;text-decoration:none;}
 .logo:hover{opacity:1;}
+.header-right{display:flex;align-items:center;gap:1rem;}
 .back-btn{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:2px;text-transform:uppercase;color:var(--text3);text-decoration:none;transition:color .2s;display:flex;align-items:center;gap:.4rem;}
 .back-btn:hover{color:var(--accent);}
+.user-name{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:2px;text-transform:uppercase;color:var(--accent);opacity:.7;}
+.signout-btn{font-family:'DM Mono',monospace;font-size:.55rem;letter-spacing:1.5px;text-transform:uppercase;padding:.3rem .7rem;border:1px solid var(--border2);border-radius:2px;background:none;color:var(--text3);cursor:pointer;transition:all .15s;}
+.signout-btn:hover{border-color:var(--red);color:var(--red);}
 .hero-tagline{padding:2rem 0 1.8rem;text-align:center;border-bottom:1px solid var(--border);margin-bottom:2.5rem;}
 .tagline-text{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.8rem,6vw,5rem);letter-spacing:3px;line-height:1.1;color:var(--text);animation:fadeInUp .5s ease both;}
 .tagline-text em{font-style:normal;color:var(--accent);text-shadow:0 0 40px rgba(232,255,71,.3);}
 .tagline-meta{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-top:.8rem;animation:fadeInUp .5s ease .2s both;}
-.tagline-sub{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:3px;text-transform:uppercase;color:var(--text3);margin-top:.6rem;animation:fadeInUp .5s ease .1s both;}
 @keyframes fadeInUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 .input-section{margin-bottom:3rem}
 .prompt-label{font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:1rem;display:flex;align-items:center;gap:.5rem;}
@@ -37,8 +34,6 @@ header{padding:1.4rem 0;display:flex;align-items:center;justify-content:space-be
 textarea{width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:4px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:1.05rem;font-weight:300;padding:1.2rem 1.4rem;resize:none;outline:none;transition:border-color .2s,box-shadow .2s;line-height:1.6;min-height:110px;}
 textarea:focus{border-color:var(--accent);box-shadow:0 0 0 1px rgba(232,255,71,.15),inset 0 0 30px rgba(232,255,71,.02);}
 textarea::placeholder{color:var(--text3)}
-.char-count{font-family:'DM Mono',monospace;font-size:.55rem;letter-spacing:1px;color:var(--text3);text-align:right;margin-top:.4rem;}
-.char-count.warn{color:var(--accent);}
 .style-section{margin:1.2rem 0 1.5rem;}
 .style-hint{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:.7rem;}
 .style-hint span{color:var(--accent);opacity:.7}
@@ -85,12 +80,12 @@ textarea::placeholder{color:var(--text3)}
 .name-card:hover::before{opacity:.6}
 .name-card.copied{border-color:var(--accent);background:rgba(232,255,71,.04)}
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-.name-text{font-family:'DM Sans',sans-serif;font-size:1.05rem;color:var(--text);line-height:1.5;font-weight:400;}
+.name-text{font-size:1rem;color:var(--text);line-height:1.5;font-weight:300;}
 .name-style{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:2px;text-transform:uppercase;padding:.2rem .5rem;border-radius:2px;display:inline-flex;align-items:center;width:fit-content;}
 .copy-hint{font-family:'DM Mono',monospace;font-size:.58rem;color:var(--text3);letter-spacing:1px;margin-top:.2rem;transition:color .2s;}
 .name-card:hover .copy-hint{color:var(--accent)}
 .name-card.copied .copy-hint{color:var(--accent)}
-.type-title{background:rgba(78,205,196,.1);color:var(--blue)}
+.type-a{background:rgba(78,205,196,.1);color:var(--blue)}
 .fav-btn{position:absolute;top:.9rem;right:.9rem;background:none;border:none;cursor:pointer;font-size:1rem;opacity:.3;transition:opacity .2s,transform .2s;padding:.2rem;color:var(--accent);}
 .fav-btn:hover{opacity:.8;transform:scale(1.2);}
 .fav-btn.saved{opacity:1;transform:scale(1.1);}
@@ -103,7 +98,7 @@ textarea::placeholder{color:var(--text3)}
 .fav-action:hover{border-color:var(--accent);color:var(--accent);}
 .fav-action.primary{border-color:var(--accent);color:var(--accent);}
 .fav-action.primary:hover{background:var(--accent);color:var(--bg);}
-.fav-panel{position:fixed;right:0;top:0;height:100vh;width:340px;background:#0d0f14;border-left:1px solid var(--border2);z-index:1000;transform:translateX(100%);transition:transform .3s cubic-bezier(.16,1,.3,1);display:flex;flex-direction:column;overflow:hidden;}
+.fav-panel{position:fixed;right:0;top:0;height:100vh;width:360px;background:#0d0f14;border-left:1px solid var(--border2);z-index:1000;transform:translateX(100%);transition:transform .3s cubic-bezier(.16,1,.3,1);display:flex;flex-direction:column;overflow:hidden;}
 .fav-panel.open{transform:translateX(0);}
 .fav-panel-header{padding:1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
 .fav-panel-title{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:3px;color:var(--accent);}
@@ -112,9 +107,10 @@ textarea::placeholder{color:var(--text3)}
 .fav-panel-body{flex:1;overflow-y:auto;padding:1rem;}
 .fav-panel-body::-webkit-scrollbar{width:3px}
 .fav-panel-body::-webkit-scrollbar-thumb{background:var(--border2)}
+.fav-section-title{font-family:'DM Mono',monospace;font-size:.55rem;letter-spacing:3px;text-transform:uppercase;color:var(--accent);padding:.5rem 0 .8rem;border-bottom:1px solid var(--border);margin-bottom:.8rem;opacity:.8;}
 .fav-item{background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:1rem 1.2rem;margin-bottom:.6rem;display:flex;align-items:flex-start;justify-content:space-between;gap:.8rem;animation:fadeUp .3s ease both;}
 .fav-item-content{flex:1;}
-.fav-item-type{font-family:'DM Mono',monospace;font-size:.52rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-bottom:.3rem;}
+.fav-item-label{font-family:'DM Mono',monospace;font-size:.52rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-bottom:.3rem;}
 .fav-item-text{font-size:.9rem;color:var(--text);line-height:1.4;}
 .fav-item-actions{display:flex;gap:.4rem;flex-shrink:0;}
 .fav-item-btn{font-family:'DM Mono',monospace;font-size:.52rem;letter-spacing:1px;text-transform:uppercase;padding:.25rem .6rem;border:1px solid var(--border2);border-radius:2px;background:none;color:var(--text3);cursor:pointer;transition:all .15s;}
@@ -126,20 +122,18 @@ textarea::placeholder{color:var(--text3)}
 .fav-overlay.show{opacity:1;pointer-events:all;}
 .toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(20px);background:var(--accent);color:var(--bg);font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:2px;text-transform:uppercase;padding:.6rem 1.4rem;border-radius:3px;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;z-index:9999;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-.shared-banner{background:rgba(232,255,71,.05);border:1px solid rgba(232,255,71,.15);border-radius:4px;padding:1rem 1.4rem;margin-bottom:2rem;font-family:'DM Mono',monospace;font-size:.62rem;color:var(--accent);letter-spacing:1.5px;text-transform:uppercase;display:none;}
-.shared-banner.show{display:block;}
 .error-msg{font-family:'DM Mono',monospace;font-size:.75rem;color:var(--red);padding:1rem 1.2rem;border:1px solid rgba(255,71,87,.2);border-radius:4px;background:rgba(255,71,87,.05);display:none;letter-spacing:1px;}
 .error-msg.show{display:block}
+.shared-banner{background:rgba(232,255,71,.05);border:1px solid rgba(232,255,71,.15);border-radius:4px;padding:1rem 1.4rem;margin-bottom:2rem;font-family:'DM Mono',monospace;font-size:.62rem;color:var(--accent);letter-spacing:1.5px;text-transform:uppercase;display:none;}
+.shared-banner.show{display:block;}
 footer{margin-top:6rem;padding:2rem 0 3rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
 .footer-text{font-family:'DM Mono',monospace;font-size:.58rem;color:var(--text3);letter-spacing:2px;text-transform:uppercase;}
-::-webkit-scrollbar{width:4px}
-::-webkit-scrollbar-track{background:var(--bg)}
-::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
 .cursor{position:fixed;width:8px;height:8px;background:var(--accent);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);mix-blend-mode:difference;}
 .cursor-ring{position:fixed;width:32px;height:32px;border:1px solid rgba(232,255,71,.3);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .3s,height .3s,border-color .3s;}
 body{cursor:none;}
 @media(hover:none),(max-width:600px){body{cursor:auto;}.cursor,.cursor-ring{display:none;}}
-@media(max-width:600px){header{flex-direction:column;align-items:flex-start;gap:1rem}.names-grid{grid-template-columns:1fr}.btn-row{flex-wrap:wrap}.count-btn{width:28px;height:28px;font-size:.85rem;}.count-row{gap:.25rem;}}
+@media(max-width:600px){header{flex-direction:column;align-items:flex-start;gap:1rem}.names-grid{grid-template-columns:1fr}.btn-row{flex-wrap:wrap}}
 .ripple{position:fixed;border-radius:50%;background:rgba(232,255,71,.35);pointer-events:none;z-index:9999;transform:translate(-50%,-50%) scale(0);animation:rippleOut .5s cubic-bezier(.16,1,.3,1) forwards;}
 @keyframes rippleOut{0%{width:10px;height:10px;opacity:1;transform:translate(-50%,-50%) scale(0);}100%{width:80px;height:80px;opacity:0;transform:translate(-50%,-50%) scale(1);}}
 </style>
@@ -150,34 +144,25 @@ body{cursor:none;}
 <div class="wrap">
   <header>
     <a class="logo" href="/">Phraselix</a>
-    <a class="back-btn" href="/">← All Tools</a>
+    <div class="header-right">
+      <a class="back-btn" href="/">← All Tools</a>
+      <span class="user-name" id="userName"></span>
+      <button class="signout-btn" id="signoutBtn" onclick="signOut()" style="display:none">Sign Out</button>
+    </div>
   </header>
 
   <div class="hero-tagline">
-    <div class="tagline-text" id="taglineText">Titles that make people <em>stop.</em></div>
-    <div class="tagline-meta">ps — your next title is one click away</div>
+    <div class="tagline-text" id="taglineText">Titles that make people <em>you.</em></div>
+    <div class="tagline-meta">ps — Phraselix keeps growing</div>
   </div>
 
-  <div class="shared-banner" id="sharedBanner">✦ Someone shared these titles with you</div>
+  <div class="shared-banner" id="sharedBanner">Someone shared these with you</div>
 
   <section class="input-section">
-    <div class="prompt-label">What's your video about?</div>
-    <textarea id="prompt" maxlength="300" rows="4" oninput="updateChar()"></textarea>
-    <div class="char-count" id="charCount">0 / 300</div>
-
-    <div class="style-section">
-      <div class="style-hint">Tone <span>— pick one</span></div>
-      <div class="style-row" id="toneRow">
-        <button class="style-tag active" data-tone="viral">Viral</button>
-        <button class="style-tag" data-tone="funny">Funny</button>
-        <button class="style-tag" data-tone="emotional">Emotional</button>
-        <button class="style-tag" data-tone="informative">Informative</button>
-        <button class="style-tag" data-tone="controversial">Controversial</button>
-      </div>
-    </div>
-
+    <div class="prompt-label">What is your video about?</div>
+    <textarea id="prompt" rows="4" maxlength="400" placeholder="e.g. fitness creator, loves travel, based in NYC, posts daily workouts..."></textarea>
     <div class="count-section">
-      <div class="count-hint">How many titles <span>— pick a number</span></div>
+      <div class="count-hint">How many <span>— pick a number</span></div>
       <div class="count-row">
         <button class="count-btn" data-count="1">1</button>
         <button class="count-btn" data-count="2">2</button>
@@ -185,11 +170,18 @@ body{cursor:none;}
         <button class="count-btn locked" data-count="4">4</button>
         <button class="count-btn locked" data-count="5">5</button>
       </div>
-      <div class="count-locked-tip" id="countLockedTip">✦ More titles coming with premium — soon</div>
+      <div class="count-locked-tip" id="countLockedTip">More coming with premium — soon</div>
     </div>
-
+    <div class="style-section">
+      <div class="style-hint">Tone <span>— pick one</span></div>
+      <div class="style-row" id="styleRow">
+        <button class="style-tag active" data-style="professional">Professional</button>
+        <button class="style-tag" data-style="witty">Witty</button>
+        <button class="style-tag" data-style="minimal">Minimal</button>
+        <button class="style-tag" data-style="bold">Bold</button>
+      </div>
+    </div>
     <div class="error-msg" id="errorMsg"></div>
-
     <div class="btn-row">
       <button class="btn-generate" id="btnGenerate" onclick="generate()">Generate Titles</button>
       <button class="btn-more" id="btnMore" onclick="generateMore()">+ More Titles</button>
@@ -204,7 +196,7 @@ body{cursor:none;}
   <div class="fav-bar" id="favBar">
     <div class="fav-bar-left">Favorites: <span id="favCount">0</span></div>
     <div class="fav-bar-right">
-      <button class="fav-action primary" onclick="openFavPanel()">View Favorites ♥</button>
+      <button class="fav-action primary" onclick="openFavPanel()">View All Favorites ♥</button>
       <button class="fav-action" onclick="shareFavs()">Share ↗</button>
     </div>
   </div>
@@ -220,156 +212,130 @@ body{cursor:none;}
 <div class="fav-overlay" id="favOverlay" onclick="closeFavPanel()"></div>
 <div class="fav-panel" id="favPanel">
   <div class="fav-panel-header">
-    <div class="fav-panel-title">Favorites</div>
+    <div class="fav-panel-title">All Favorites</div>
     <button class="fav-panel-close" onclick="closeFavPanel()">Close</button>
   </div>
   <div class="fav-panel-body" id="favPanelBody"></div>
   <div class="fav-panel-footer">
-    <button class="fav-action primary" onclick="shareFavs()">Share Favorites ↗</button>
-    <button class="fav-action" onclick="clearFavs()">Clear All</button>
+    <button class="fav-action primary" onclick="shareFavs()">Share ↗</button>
+    <button class="fav-action" onclick="clearToolFavs()">Clear Title Favs</button>
   </div>
 </div>
-
 <div class="toast" id="toast"></div>
 
 <script>
-// ── Rotating taglines ──
-const taglines = [
-  'Titles and tags that make people <em>stop.</em>',
-  'Your video deserves a title that <em>hits.</em>',
-  'Stop using boring titles. Get ones that <em>click.</em>',
-  'Describe the video. Get the title that <em>works.</em>',
-  'Every scroll is a chance to <em>grab attention.</em>',
-  'The title is the first thing they <em>see.</em>',
-  'Make them click before they even <em>think.</em>',
-];
+// ── Auth Guard ────────────────────────────────────────────
+const TOKEN = localStorage.getItem('phraselix_token');
+const USER = (() => { try { return JSON.parse(localStorage.getItem('phraselix_user')); } catch { return null; } })();
+if (!TOKEN || !USER) { window.location.href = '/login'; }
+
+function signOut() {
+  localStorage.removeItem('phraselix_token');
+  localStorage.removeItem('phraselix_user');
+  window.location.href = '/login';
+}
+
+// Show user name
+if (USER) {
+  document.getElementById('userName').textContent = '👤 ' + USER.name;
+  document.getElementById('signoutBtn').style.display = 'block';
+}
+
+// ── Favorites (shared across all tools) ──────────────────
+const TOOL_NAME = 'hooks';
+const FAV_KEY = 'phraselix_all_favs';
+
+const TOOL_LABELS = {
+  bio: 'Bio Generator',
+  caption: 'Caption Generator',
+  hashtag: 'Hashtag Generator',
+  hooks: 'Title Generator',
+  scripthook: 'Script Hook',
+  ideas: 'Content Ideas',
+  username: 'Username Generator'
+};
+
+function getAllFavs() { try { return JSON.parse(localStorage.getItem(FAV_KEY) || '[]'); } catch { return []; } }
+function getToolFavs() { return getAllFavs().filter(f => f.tool === TOOL_NAME); }
+function saveAllFavs(favs) { localStorage.setItem(FAV_KEY, JSON.stringify(favs)); updateFavBar(); }
+
+function toggleFav(card, item) {
+  let all = getAllFavs();
+  const idx = all.findIndex(f => f.content === item.content && f.tool === TOOL_NAME);
+  const btn = card.querySelector('.fav-btn');
+  if (idx > -1) { all.splice(idx, 1); btn.classList.remove('saved'); showToast('Removed from favorites'); }
+  else { all.push({ ...item, tool: TOOL_NAME }); btn.classList.add('saved'); showToast('Saved ♥'); }
+  saveAllFavs(all);
+}
+
+function updateFavBar() {
+  const favs = getToolFavs();
+  document.getElementById('favCount').textContent = favs.length;
+  document.getElementById('favBar').classList.toggle('show', favs.length > 0);
+  if (document.getElementById('favPanel').classList.contains('open')) renderFavPanel();
+}
+
+function openFavPanel() { renderFavPanel(); document.getElementById('favPanel').classList.add('open'); document.getElementById('favOverlay').classList.add('show'); }
+function closeFavPanel() { document.getElementById('favPanel').classList.remove('open'); document.getElementById('favOverlay').classList.remove('show'); }
+
+function renderFavPanel() {
+  const all = getAllFavs();
+  const body = document.getElementById('favPanelBody');
+  if (!all.length) { body.innerHTML = '<div class="fav-panel-empty">No favorites yet.<br>Hit ♥ on any card<br>to save it here.</div>'; return; }
+  body.innerHTML = '';
+  const grouped = {};
+  all.forEach(item => { if (!grouped[item.tool]) grouped[item.tool] = []; grouped[item.tool].push(item); });
+  Object.keys(grouped).forEach(tool => {
+    const section = document.createElement('div');
+    const titleEl = document.createElement('div');
+    titleEl.className = 'fav-section-title';
+    titleEl.textContent = TOOL_LABELS[tool] || tool;
+    section.appendChild(titleEl);
+    grouped[tool].forEach(item => {
+      const el = document.createElement('div');
+      el.className = 'fav-item';
+      el.innerHTML = '<div class="fav-item-content"><div class="fav-item-label">' + (item.label || '') + '</div><div class="fav-item-text">' + item.content + '</div></div><div class="fav-item-actions"><button class="fav-item-btn" onclick="copyText(\'' + item.content.replace(/'/g, "\\'") + '\',this)">Copy</button><button class="fav-item-btn remove" onclick="removeFav(\'' + item.content.replace(/'/g, "\\'") + '\',\'' + item.tool + '\')">X</button></div>';
+      section.appendChild(el);
+    });
+    body.appendChild(section);
+  });
+}
+
+function removeFav(content, tool) {
+  saveAllFavs(getAllFavs().filter(f => !(f.content === content && f.tool === tool)));
+  renderFavPanel();
+  document.querySelectorAll('.fav-btn').forEach(btn => {
+    const t = btn.closest('.name-card')?.querySelector('.name-text')?.textContent;
+    if (t === content) btn.classList.remove('saved');
+  });
+}
+
+function clearToolFavs() {
+  saveAllFavs(getAllFavs().filter(f => f.tool !== TOOL_NAME));
+  document.querySelectorAll('.fav-btn').forEach(b => b.classList.remove('saved'));
+  showToast('Title favorites cleared');
+}
+
+function copyText(text, btn) { navigator.clipboard.writeText(text).then(() => { const o = btn.textContent; btn.textContent = 'Done'; setTimeout(() => btn.textContent = o, 1500); }); }
+
+// ── Tool Logic ────────────────────────────────────────────
+const taglines = ['Titles that make people <em>you.</em>','Stop writing boring bios. Sound like <em>yourself.</em>','Your profile. Your vibe. Your <em>words.</em>','One sentence that makes people <em>follow.</em>','Your bio is your first impression. Make it <em>hit.</em>'];
 document.getElementById('taglineText').innerHTML = taglines[Math.floor(Math.random() * taglines.length)];
 
-let selectedTone = 'viral';
-let selectedCount = 3;
-let isLoading = false;
-let allTitles = [];
-let totalGenerated = 0;
+let selectedStyle = 'professional', selectedCount = 3, isLoading = false, allItems = [];
 
-document.querySelectorAll('#toneRow .style-tag').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('#toneRow .style-tag').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    selectedTone = btn.dataset.tone;
-  });
+document.querySelectorAll('#styleRow .style-tag').forEach(btn => {
+  btn.addEventListener('click', () => { document.querySelectorAll('#styleRow .style-tag').forEach(b => b.classList.remove('active')); btn.classList.add('active'); selectedStyle = btn.dataset.style; allItems = []; });
 });
-
 document.querySelectorAll('.count-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    if (btn.classList.contains('locked')) {
-      document.getElementById('countLockedTip').classList.add('show');
-      return;
-    }
-    document.querySelectorAll('.count-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    selectedCount = parseInt(btn.dataset.count);
-    document.getElementById('countLockedTip').classList.remove('show');
-  });
+  btn.addEventListener('click', () => { if (btn.classList.contains('locked')) { document.getElementById('countLockedTip').classList.add('show'); return; } document.querySelectorAll('.count-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); selectedCount = parseInt(btn.dataset.count); document.getElementById('countLockedTip').classList.remove('show'); });
 });
-
-function updateChar() {
-  const len = document.getElementById('prompt').value.length;
-  const el = document.getElementById('charCount');
-  el.textContent = len + ' / 300';
-  el.classList.toggle('warn', len > 250);
-}
-
-const placeholders = [
-  "Fighting animation between two rival characters...",
-  "Morning routine as a broke college student...",
-  "Trying every viral food trend so you don't have to...",
-  "Day in my life as a night shift nurse...",
-  "I quit my 9-5 and here's what happened after 30 days...",
-  "Teaching myself to code in 30 days with zero experience...",
-  "Honest review of living alone for the first time at 22...",
-];
-document.getElementById('prompt').placeholder = placeholders[Math.floor(Math.random() * placeholders.length)];
-
-function isBadInput(text) {
-  const banned = [
-    'porn','porno','pornstar','pornhub','onlyfans','sex','sexy','sexual',
-    'nude','naked','nsfw','xxx','erotic','hentai',
-    'horny','boobs','tits','dick','cock','pussy','vagina','penis',
-    'blowjob','handjob','cumshot','orgasm','fetish','bdsm',
-    'stripper','escort','prostitute','hooker','camgirl',
-    'fuck','shit','bitch','cunt','asshole','bastard','slut','whore',
-    'nigga','nigger','faggot','retard',
-    'murder','rape','suicide','terrorist','nazis','nazi','racist','racism',
-    'genocide','pedophile','pedo','molest',
-  ];
-  const wb = (t, w) => new RegExp('\\b' + w + '\\b').test(t);
-  const t = text.toLowerCase();
-  for (const word of banned) { if (wb(t, word)) return true; }
-  const leet = t.replace(/0/g,'o').replace(/1/g,'i').replace(/3/g,'e')
-    .replace(/4/g,'a').replace(/5/g,'s').replace(/8/g,'b')
-    .replace(/\$/g,'s').replace(/@/g,'a').replace(/!/g,'i');
-  for (const word of banned) { if (wb(leet, word)) return true; }
-  return false;
-}
-
-async function callAPI(systemPrompt, userMsg) {
-  const response = await fetch('/api/generate', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ system: systemPrompt, messages: [{ role: 'user', content: userMsg }] })
-  });
-  const data = await response.json();
-  if (data.error) throw new Error(data.error.message || 'API error');
-  const raw = data.content[0].text.trim();
-  // strip markdown fences
-  const clean = raw.replace(/```json|```/g, '').trim();
-  // extract JSON object even if there's surrounding text
-  const match = clean.match(/\{[\s\S]*\}/);
-  if (!match) throw new Error('No JSON found in response: ' + raw.slice(0, 100));
-  const parsed = JSON.parse(match[0]);
-  if (!parsed.titles || !parsed.titles.length) throw new Error('No titles in response');
-  return parsed;
-}
+document.getElementById('prompt').addEventListener('keydown', e => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) generate(); });
 
 function buildSystemPrompt() {
-  const toneGuides = {
-    viral: 'VIRAL: High stakes, curiosity gap, open loops. Make them need to click. Use active verbs — "I survived" not "I spent". Numbers and time create urgency.',
-    funny: 'FUNNY: Relatable, self-aware, absurd. Sound like you are texting a friend. Lean into the cringe, the fail, the unexpected twist.',
-    emotional: 'EMOTIONAL: Match the emotion to the content. For action/intense content — pride, grind, tension, sacrifice. For personal content — vulnerability, growth. Never apply soft emotions to intense content.',
-    informative: 'INFORMATIVE: Lead with the result or insight. Front-load the keyword. Use numbers. Clear promise, zero fluff.',
-    controversial: 'CONTROVERSIAL: Challenge a common belief. Say the thing nobody says out loud. Triggers curiosity and debate from both sides.'
-  };
-
-  return `You are an expert at writing video titles that get clicks. You know different videos need different title styles.
-
-Tone: ${selectedTone}
-${toneGuides[selectedTone]}
-
-CRITICAL: MATCH THE TITLE STYLE TO WHAT THE VIDEO ACTUALLY IS.
-
-If the video IS the content (animation, fight scene, short film, skit, music video):
-- Write titles like MOVIE or SHOW titles that tease what it contains
-- For a fight animation: "The Last Stand", "Two Rivals. One Battle.", "No Mercy", "Outmatched"
-- Think Alan Becker: "Animation vs. Minecraft" not "I spent months animating Minecraft"
-
-If the video is ABOUT making something (vlog, devlog, tutorial, behind the scenes):
-- Write from the creator perspective about their experience
-- Examples: "I spent 3 months on this fight scene", "72 hours on one animation"
-
-NEVER write:
-- POV format unless the video is literally a POV video
-- Wikipedia descriptions of what happens
-- Fake hype: INSANE, life-changing, you won't believe
-
-Respond ONLY with valid JSON, no markdown, no extra text:
-{"titles":["title1","title2","title3"]}`;}
-
-function buildUserMsg(prompt) {
-  return `Video: "${prompt}"
-Tone: ${selectedTone}
-
-Decide if this is a content video or a process video. Return EXACTLY ${selectedCount} title(s) in the titles array — no more, no less. Each must be structurally different.`;
+  return `You write short, punchy bios that feel human and authentic. No cringe, no buzzwords, no "passionate about".\n\nTone: ${selectedStyle}\n- professional: Keep their energy but frame it as a credible value proposition.\n- witty: Find the clever angle. Dry, self-aware, a little personality.\n- minimal: Strip it to the essential. Fewest words, maximum punch.\n- bold: Amplify their confidence. Direct, unapologetic.\n\nNEVER write "Passionate about X" or LinkedIn templates.\n\nRespond ONLY with valid JSON: {"items":["bio1","bio2","bio3"]}`;
 }
+function buildUserMsg(prompt) { return `Person/Brand: "${prompt}"\nTone: ${selectedStyle}\n\nWrite EXACTLY ${selectedCount} bios. Each must have a completely different angle and structure.`; }
 
 async function generate() {
   const prompt = document.getElementById('prompt').value.trim();
@@ -378,210 +344,120 @@ async function generate() {
   hideError();
   if (isBadInput(prompt)) { showError("Keep it clean — Phraselix isn't that kind of tool."); return; }
   setLoading(true, 'Crafting your titles...');
-  allTitles = []; totalGenerated = 0;
+  allItems = [];
   document.getElementById('results').innerHTML = '';
   document.getElementById('btnMore').style.display = 'none';
   try {
     const result = await callAPI(buildSystemPrompt(), buildUserMsg(prompt));
     renderResults(result);
     document.getElementById('btnMore').style.display = 'block';
-  } catch(e) {
-    showError('Something went wrong — try again.');
-    console.error(e);
-  } finally {
-    setLoading(false);
-  }
+  } catch(e) { showError('Something went wrong — try again.'); } finally { setLoading(false); }
 }
 
 async function generateMore() {
   const prompt = document.getElementById('prompt').value.trim();
   if (!prompt || isLoading) return;
-  hideError();
-  setLoading(true, 'Generating more titles...');
-  const extraInstruction = allTitles.length
-    ? '\n\nDo NOT repeat any of these already shown titles, generate completely different ones:\n' + allTitles.slice(-20).join(', ')
-    : '\n\nGenerate completely different titles from any previous set.';
+  setLoading(true, 'Generating more...');
+  const extra = allItems.length ? '\n\nDo NOT repeat these:\n' + allItems.slice(-20).join(', ') : '';
   try {
-    const result = await callAPI(buildSystemPrompt(), buildUserMsg(prompt) + extraInstruction);
+    const result = await callAPI(buildSystemPrompt(), buildUserMsg(prompt) + extra);
     appendResults(result);
-  } catch(e) {
-    showError('Something went wrong — try again.');
-  } finally {
-    setLoading(false);
-  }
+  } catch(e) { showError('Something went wrong — try again.'); } finally { setLoading(false); }
 }
 
 function renderResults(data) {
   const container = document.getElementById('results');
-  container.innerHTML = `
-    <div class="results-header">
-      <div class="results-label">Generated Titles</div>
-      <div style="display:flex;align-items:center;gap:1rem">
-        <button onclick="shareResults()" style="font-family:'DM Mono',monospace;font-size:.55rem;letter-spacing:1.5px;text-transform:uppercase;padding:.25rem .7rem;border:1px solid var(--border2);border-radius:2px;background:none;color:var(--text3);cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--text3)'">Share ↗</button>
-        <div class="results-count" id="titleCount">0 titles</div>
-      </div>
-    </div>
-    <div class="names-grid" id="titlesGrid"></div>`;
-
-  const grid = document.getElementById('titlesGrid');
-  const toneLabel = selectedTone.charAt(0).toUpperCase() + selectedTone.slice(1);
-  const newTitles = (data.titles || []).slice(0, selectedCount);
-  allTitles = newTitles;
-  totalGenerated = newTitles.length;
-
-  newTitles.forEach((title, i) => {
-    grid.appendChild(makeCard('title', toneLabel, title, 'type-title'));
-  });
-
-  document.getElementById('titleCount').textContent = totalGenerated + ' titles';
-  updateFavBar();
+  container.innerHTML = '';
+  const header = document.createElement('div'); header.className = 'results-header';
+  const lbl = document.createElement('div'); lbl.className = 'results-label'; lbl.textContent = 'Generated Titles';
+  const right = document.createElement('div'); right.style.cssText = 'display:flex;align-items:center;gap:1rem';
+  const shareBtn = document.createElement('button');
+  shareBtn.textContent = 'Share'; shareBtn.style.cssText = 'font-family:DM Mono,monospace;font-size:.55rem;letter-spacing:1.5px;text-transform:uppercase;padding:.25rem .7rem;border:1px solid var(--border2);border-radius:2px;background:none;color:var(--text3);cursor:pointer;transition:all .15s';
+  shareBtn.onmouseenter = function(){ this.style.borderColor='var(--accent)'; this.style.color='var(--accent)'; };
+  shareBtn.onmouseleave = function(){ this.style.borderColor='var(--border2)'; this.style.color='var(--text3)'; };
+  shareBtn.onclick = shareResults;
+  const countEl = document.createElement('div'); countEl.className = 'results-count'; countEl.id = 'itemCount'; countEl.textContent = '0';
+  right.appendChild(shareBtn); right.appendChild(countEl);
+  header.appendChild(lbl); header.appendChild(right);
+  const grid = document.createElement('div'); grid.className = 'names-grid'; grid.id = 'itemsGrid';
+  container.appendChild(header); container.appendChild(grid);
+  const fresh = (data.items || []).slice(0, selectedCount);
+  allItems = fresh;
+  fresh.forEach(item => grid.appendChild(makeCard(selectedStyle.charAt(0).toUpperCase() + selectedStyle.slice(1), item, 'type-a')));
+  updateCount(); updateFavBar();
 }
 
 function appendResults(data) {
-  const grid = document.getElementById('titlesGrid');
+  const grid = document.getElementById('itemsGrid');
   if (!grid) { renderResults(data); return; }
-
-  const newTitles = (data.titles || []).slice(0, selectedCount);
-  const toneLabel = selectedTone.charAt(0).toUpperCase() + selectedTone.slice(1);
-  // dedupe against already shown
-  const existing = new Set(allTitles.map(t => t.toLowerCase()));
-  const fresh = newTitles.filter(t => !existing.has(t.toLowerCase()));
-  allTitles = [...allTitles, ...fresh];
-  totalGenerated = allTitles.length;
-
-  // insert new cards at the TOP, above existing ones
-  [...fresh].reverse().forEach((title, i) => {
-    const num = allTitles.length - i;
-    const card = makeCard('title', toneLabel, title, 'type-title');
-    grid.insertBefore(card, grid.firstChild);
-  });
-
-  const countEl = document.getElementById('titleCount');
-  if (countEl) countEl.textContent = totalGenerated + ' titles';
-  updateFavBar();
+  const fresh = (data.items || []).slice(0, selectedCount).filter(t => !allItems.includes(t));
+  allItems = [...allItems, ...fresh];
+  const label = selectedStyle.charAt(0).toUpperCase() + selectedStyle.slice(1);
+  [...fresh].reverse().forEach(item => { const card = makeCard(label, item, 'type-a'); grid.insertBefore(card, grid.firstChild); });
+  updateCount(); updateFavBar();
 }
 
-function makeCard(type, label, content, typeClass) {
+function updateCount() { const el = document.getElementById('itemCount'); if (el) el.textContent = document.querySelectorAll('#itemsGrid .name-card').length + ' results'; }
+
+function makeCard(label, content, typeClass) {
   const card = document.createElement('div');
   card.className = 'name-card';
-  const item = { type, label, content };
-  const isFaved = getFavs().some(f => f.content === content);
-  card.innerHTML = `<button class="fav-btn ${isFaved ? 'saved' : ''}" title="Save to favorites">♥</button><div class="name-style ${typeClass}">${label}</div><div class="name-text">${content}</div><div class="copy-hint">click to copy</div>`;
+  const item = { label, content };
+  const isFaved = getAllFavs().some(f => f.content === content && f.tool === TOOL_NAME);
+  card.innerHTML = '<button class="fav-btn ' + (isFaved ? 'saved' : '') + '" title="Save">&#9829;</button><div class="name-style ' + typeClass + '">' + label + '</div><div class="name-text">' + content + '</div><div class="copy-hint">click to copy</div>';
   card.querySelector('.fav-btn').addEventListener('click', e => { e.stopPropagation(); toggleFav(card, item); });
-  card.addEventListener('click', () => {
-    navigator.clipboard.writeText(content).then(() => {
-      card.classList.add('copied');
-      card.querySelector('.copy-hint').textContent = 'copied!';
-      setTimeout(() => { card.classList.remove('copied'); card.querySelector('.copy-hint').textContent = 'click to copy'; }, 2000);
-    });
-  });
+  card.addEventListener('click', () => { navigator.clipboard.writeText(content).then(() => { card.classList.add('copied'); card.querySelector('.copy-hint').textContent = 'copied!'; setTimeout(() => { card.classList.remove('copied'); card.querySelector('.copy-hint').textContent = 'click to copy'; }, 2000); }); });
   return card;
 }
 
-function getFavs() { try { return JSON.parse(localStorage.getItem('phraselix_title_favs') || '[]'); } catch { return []; } }
-function saveFavs(favs) { localStorage.setItem('phraselix_title_favs', JSON.stringify(favs)); updateFavBar(); }
-function toggleFav(card, item) {
-  let favs = getFavs();
-  const idx = favs.findIndex(f => f.content === item.content);
-  const btn = card.querySelector('.fav-btn');
-  if (idx > -1) { favs.splice(idx, 1); btn.classList.remove('saved'); showToast('Removed from favorites'); }
-  else { favs.push(item); btn.classList.add('saved'); showToast('Saved to favorites ♥'); }
-  saveFavs(favs);
+function isBadInput(text) {
+  const banned = ['porn','sex','nude','naked','nsfw','xxx','erotic','fuck','shit','bitch','cunt','nigga','nigger','murder','rape','suicide','terrorist','nazi','pedophile'];
+  const t = text.toLowerCase();
+  return banned.some(w => new RegExp('\\b' + w + '\\b').test(t));
 }
-function clearFavs() { saveFavs([]); document.querySelectorAll('.fav-btn').forEach(b => b.classList.remove('saved')); showToast('Favorites cleared'); }
-function updateFavBar() {
-  const favs = getFavs();
-  document.getElementById('favCount').textContent = favs.length;
-  document.getElementById('favBar').classList.toggle('show', favs.length > 0);
-  if (document.getElementById('favPanel').classList.contains('open')) renderFavPanel();
+
+async function callAPI(sys, msg) {
+  const r = await fetch('/api/generate', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + TOKEN }, body: JSON.stringify({ system: sys, messages: [{ role: 'user', content: msg }] }) });
+  const d = await r.json();
+  if (d.error) throw new Error(d.error.message || 'API error');
+  const raw = d.content[0].text.trim().replace(/```json|```/g, '').trim();
+  const match = raw.match(/\{[\s\S]*\}/);
+  if (!match) throw new Error('No JSON in response');
+  const parsed = JSON.parse(match[0]);
+  if (!parsed.items || !parsed.items.length) throw new Error('No items in response');
+  return parsed;
 }
-function openFavPanel() { renderFavPanel(); document.getElementById('favPanel').classList.add('open'); document.getElementById('favOverlay').classList.add('show'); }
-function closeFavPanel() { document.getElementById('favPanel').classList.remove('open'); document.getElementById('favOverlay').classList.remove('show'); }
-function renderFavPanel() {
-  const favs = getFavs();
-  const body = document.getElementById('favPanelBody');
-  if (!favs.length) { body.innerHTML = '<div class="fav-panel-empty">No favorites yet.<br>Hit ♥ on any card<br>to save it here.</div>'; return; }
-  body.innerHTML = '';
-  favs.forEach(item => {
-    const el = document.createElement('div');
-    el.className = 'fav-item';
-    el.innerHTML = `<div class="fav-item-content"><div class="fav-item-type">${item.label || item.type}</div><div class="fav-item-text">${item.content}</div></div><div class="fav-item-actions"><button class="fav-item-btn" onclick="copyToClipboard('${item.content.replace(/'/g,"\\'")}',this)">Copy</button><button class="fav-item-btn remove" onclick="removeFavFromPanel('${item.content.replace(/'/g,"\\'")}')">X</button></div>`;
-    body.appendChild(el);
-  });
-}
-function removeFavFromPanel(content) {
-  saveFavs(getFavs().filter(f => f.content !== content));
-  renderFavPanel();
-  document.querySelectorAll('.fav-btn').forEach(btn => {
-    const cardText = btn.closest('.name-card') && btn.closest('.name-card').querySelector('.name-text');
-    if (cardText && cardText.textContent === content) btn.classList.remove('saved');
-  });
-}
-function copyToClipboard(text, btn) {
-  navigator.clipboard.writeText(text).then(() => { const o = btn.textContent; btn.textContent = 'ok'; setTimeout(() => btn.textContent = o, 1500); });
-}
+
 function shareResults() {
   const cards = [...document.querySelectorAll('.name-text')].map(c => c.textContent);
   if (!cards.length) return;
-  const url = window.location.origin + window.location.pathname + '?shared=' + encodeURIComponent(cards.join('|||'));
-  navigator.clipboard.writeText(url).then(() => showToast('Link copied — share it!'));
+  navigator.clipboard.writeText(window.location.origin + window.location.pathname + '?shared=' + encodeURIComponent(cards.join('|||'))).then(() => showToast('Link copied!'));
 }
 function shareFavs() {
-  const favs = getFavs();
+  const favs = getToolFavs();
   if (!favs.length) return;
-  const url = window.location.origin + window.location.pathname + '?shared=' + encodeURIComponent(favs.map(f => f.content).join('|||'));
-  navigator.clipboard.writeText(url).then(() => showToast('Link copied — share it!'));
+  navigator.clipboard.writeText(window.location.origin + window.location.pathname + '?shared=' + encodeURIComponent(favs.map(f => f.content).join('|||'))).then(() => showToast('Link copied!'));
 }
-
-const sharedParam = new URLSearchParams(window.location.search).get('shared');
-if (sharedParam) {
-  const items = decodeURIComponent(sharedParam).split('|||').filter(Boolean);
-  document.getElementById('sharedBanner').classList.add('show');
-  const grid = document.createElement('div');
-  grid.className = 'names-grid';
-  items.forEach((content, i) => grid.appendChild(makeCard('title', 'Title', content, 'type-title')));
-  document.getElementById('results').appendChild(grid);
-}
-
-function setLoading(state, text) {
-  isLoading = state;
-  document.getElementById('loading').classList.toggle('show', state);
-  document.getElementById('loadingText').textContent = text || 'Crafting your titles...';
-  document.getElementById('btnGenerate').disabled = state;
-}
+function setLoading(state, text) { isLoading = state; document.getElementById('loading').classList.toggle('show', state); document.getElementById('loadingText').textContent = text || 'Generating...'; document.getElementById('btnGenerate').disabled = state; }
 function showError(msg) { const el = document.getElementById('errorMsg'); el.textContent = msg; el.classList.add('show'); }
 function hideError() { document.getElementById('errorMsg').classList.remove('show'); }
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2000);
-}
+function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2000); }
 
 const cursor = document.getElementById('cursor');
 const ring = document.getElementById('cursorRing');
-let mx = 0, my = 0, rx = 0, ry = 0;
-document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; cursor.style.left = mx + 'px'; cursor.style.top = my + 'px'; });
-function animRing() { rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12; ring.style.left = rx + 'px'; ring.style.top = ry + 'px'; requestAnimationFrame(animRing); }
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; cursor.style.left=mx+'px'; cursor.style.top=my+'px'; });
+function animRing(){ rx+=(mx-rx)*.12; ry+=(my-ry)*.12; ring.style.left=rx+'px'; ring.style.top=ry+'px'; requestAnimationFrame(animRing); }
 animRing();
-document.querySelectorAll('a,button,.name-card,.tag-pill').forEach(el => {
-  el.addEventListener('mouseenter', () => { ring.style.width = '48px'; ring.style.height = '48px'; ring.style.borderColor = 'rgba(232,255,71,.6)'; });
-  el.addEventListener('mouseleave', () => { ring.style.width = '32px'; ring.style.height = '32px'; ring.style.borderColor = 'rgba(232,255,71,.3)'; });
+document.querySelectorAll('a,button,.name-card').forEach(el => {
+  el.addEventListener('mouseenter', () => { ring.style.width='48px'; ring.style.height='48px'; ring.style.borderColor='rgba(232,255,71,.6)'; });
+  el.addEventListener('mouseleave', () => { ring.style.width='32px'; ring.style.height='32px'; ring.style.borderColor='rgba(232,255,71,.3)'; });
 });
-
-document.addEventListener('touchstart', e => {
-  const touch = e.touches[0];
-  const ripple = document.createElement('div');
-  ripple.className = 'ripple';
-  ripple.style.left = touch.clientX + 'px';
-  ripple.style.top = touch.clientY + 'px';
-  document.body.appendChild(ripple);
-  setTimeout(() => ripple.remove(), 500);
-  const card = e.target.closest('.name-card');
-  if (card) { card.style.transition = 'transform .1s'; card.style.transform = 'scale(.98)'; setTimeout(() => card.style.transform = '', 150); }
-}, { passive: true });
+document.addEventListener('touchstart', e => { const touch = e.touches[0]; const ripple = document.createElement('div'); ripple.className = 'ripple'; ripple.style.left = touch.clientX + 'px'; ripple.style.top = touch.clientY + 'px'; document.body.appendChild(ripple); setTimeout(() => ripple.remove(), 500); }, {passive:true});
 
 updateFavBar();
+const sharedParam = new URLSearchParams(window.location.search).get('shared');
+if (sharedParam) { const items = decodeURIComponent(sharedParam).split('|||').filter(Boolean); document.getElementById('sharedBanner').classList.add('show'); const grid = document.createElement('div'); grid.className = 'names-grid'; items.forEach(content => grid.appendChild(makeCard('Shared', content, 'type-a'))); document.getElementById('results').appendChild(grid); }
 </script>
 <script defer src="/_vercel/insights/script.js"></script>
 </body>
