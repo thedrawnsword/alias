@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 
 const app = express();
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname)));
 
 const MONGO_URI = process.env.MONGO_URI;
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -170,7 +170,7 @@ const fileMap = {
   '/login': 'login/index.html', '/signup': 'signup/index.html', '/coins': 'coins/index.html'
 };
 Object.keys(fileMap).forEach(route => {
-  app.get(route, (req, res) => res.sendFile(path.join(__dirname, 'public', fileMap[route])));
+  app.get(route, (req, res) => res.sendFile(path.join(__dirname, fileMap[route])));
 });
 
 module.exports = app;
