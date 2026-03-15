@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Phraselix — Content Ideas</title>
+<title>Phraselix — Content Ideas Generator</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -165,13 +165,13 @@ body{cursor:none;}
     </div>
   </header>
   <div class="hero-tagline">
-    <div class="tagline-text" id="taglineText">Never run out of things to <em>you.</em></div>
+    <div class="tagline-text" id="taglineText">A bio that actually sounds like <em>you.</em></div>
     <div class="tagline-meta">ps — Phraselix keeps growing</div>
   </div>
   <div class="shared-banner" id="sharedBanner">Someone shared these with you</div>
   <section class="input-section">
     <div class="prompt-label">Describe your niche, content style, or audience</div>
-    <textarea id="prompt" rows="4" maxlength="400" placeholder="e.g. fitness creator, loves travel, based in NYC, posts daily workouts..."></textarea>
+    <textarea id="prompt" rows="4" maxlength="400" placeholder="e.g. fitness creator, posts workouts and nutrition tips, audience is gym beginners..."></textarea>
     <div class="count-section">
       <div class="count-hint">How many <span>— pick a number</span></div>
       <div class="count-row">
@@ -186,10 +186,11 @@ body{cursor:none;}
     <div class="style-section">
       <div class="style-hint">Tone <span>— pick one</span></div>
       <div class="style-row" id="styleRow">
-        <button class="style-tag active" data-style="professional">Professional</button>
-        <button class="style-tag" data-style="witty">Witty</button>
-        <button class="style-tag" data-style="minimal">Minimal</button>
-        <button class="style-tag" data-style="bold">Bold</button>
+        <button class="style-tag active" data-style="any">Any Format</button>
+        <button class="style-tag" data-style="shortform">Short Form</button>
+        <button class="style-tag" data-style="longform">Long Form</button>
+        <button class="style-tag" data-style="series">Series</button>
+        <button class="style-tag" data-style="trending">Trending Angle</button>
       </div>
     </div>
     <div class="error-msg" id="errorMsg"></div>
@@ -200,12 +201,12 @@ body{cursor:none;}
   </section>
   <div class="loading" id="loading">
     <div class="loader"><span></span><span></span><span></span></div>
-    <span id="loadingText">Thinking of ideas...</span>
+    <span id="loadingText">Writing your bio...</span>
   </div>
   <div id="results"></div>
   <footer>
     <span class="footer-text">Phraselix — Content Tools</span>
-    <span class="footer-text">Content Ideas</span>
+    <span class="footer-text">Content Ideas Generator</span>
   </footer>
 </div>
 
@@ -296,15 +297,15 @@ function removeFav(content,tool){saveAllFavs(getAllFavs().filter(f=>!(f.content=
 function clearAllFavs(){if(!confirm('Clear ALL favorites from all tools?'))return;saveAllFavs([]);document.querySelectorAll('.fav-btn').forEach(b=>b.classList.remove('saved'));renderAllFavs();showToast('All favorites cleared');}
 function copyText(text,btn){navigator.clipboard.writeText(text).then(()=>{const o=btn.textContent;btn.textContent='Done';setTimeout(()=>btn.textContent=o,1500);});}
 
-const taglines=['Never run out of things to <em>you.</em>','Content ideas your audience actually <em>yourself.</em>','Your profile. Your vibe. Your <em>words.</em>','One sentence that makes people <em>follow.</em>'];
+const taglines=['Never run out of things to <em>post.</em>','Content ideas your audience actually <em>wants.</em>','From blank page to full <em>content calendar.</em>'];
 document.getElementById('taglineText').innerHTML=taglines[Math.floor(Math.random()*taglines.length)];
-let selectedStyle='professional',selectedCount=3,isLoading=false,allItems=[];
+let selectedStyle='any',selectedCount=3,isLoading=false,allItems=[];
 document.querySelectorAll('#styleRow .style-tag').forEach(btn=>{btn.addEventListener('click',()=>{document.querySelectorAll('#styleRow .style-tag').forEach(b=>b.classList.remove('active'));btn.classList.add('active');selectedStyle=btn.dataset.style;allItems=[];});});
 document.querySelectorAll('.count-btn').forEach(btn=>{btn.addEventListener('click',()=>{if(btn.classList.contains('locked')){document.getElementById('countLockedTip').classList.add('show');return;}document.querySelectorAll('.count-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');selectedCount=parseInt(btn.dataset.count);document.getElementById('countLockedTip').classList.remove('show');});});
 document.getElementById('prompt').addEventListener('keydown',e=>{if(e.key==='Enter'&&(e.ctrlKey||e.metaKey))generate();});
 
-function buildSystemPrompt(){return `You write short, punchy bios that feel human and authentic. No cringe, no buzzwords.\n\nTone: ${selectedStyle}\n- professional: Polished, still sounds like them.\n- witty: Dry, self-aware.\n- minimal: Fewest words, maximum punch.\n- bold: Direct, unapologetic.\n\nNEVER write "Passionate about X".\n\nRespond ONLY with valid JSON: {"items":["bio1","bio2"]}`;}
-function buildUserMsg(prompt){return `Person/Brand: "${prompt}"\nTone: ${selectedStyle}\n\nWrite EXACTLY ${selectedCount} bios. Each completely different angle.`;}
+function buildSystemPrompt(){var t=selectedStyle,g={'any':'Mix of formats whatever fits best.','shortform':'TikTok/Reels style under 60 seconds single point high retention.','longform':'YouTube style 10+ mins deeper topic story or tutorial.','series':'Multi-part content with episode concepts.','trending':'Ideas tapping current trends with a niche spin.'};return 'You generate specific actionable content ideas for creators. Not vague topics but actual concepts with a clear angle.\n\nFormat: '+t+'\nGuide: '+(g[t]||g.any)+'\n\nRules: Each idea must be specific with a hook. No generic advice.\n\nRespond ONLY with valid JSON: {"items":["idea1","idea2"]}';}
+function buildUserMsg(prompt){return 'Creator: "'+prompt+'"\nFormat: '+selectedStyle+'\n\nGenerate EXACTLY '+selectedCount+' content ideas. Each must be a specific concept with a clear angle.';}
 
 async function generate(){const prompt=document.getElementById('prompt').value.trim();if(!prompt){document.getElementById('prompt').focus();return;}if(isLoading)return;hideError();if(isBadInput(prompt)){showError("Keep it clean — Phraselix isn't that kind of tool.");return;}setLoading(true,'Thinking of ideas...');allItems=[];document.getElementById('results').innerHTML='';document.getElementById('btnMore').style.display='none';try{const result=await callAPI(buildSystemPrompt(),buildUserMsg(prompt));renderResults(result);document.getElementById('btnMore').style.display='block';}catch(e){showError('Something went wrong — try again.');}finally{setLoading(false);}}
 async function generateMore(){const prompt=document.getElementById('prompt').value.trim();if(!prompt||isLoading)return;setLoading(true,'Generating more...');const extra=allItems.length?'\n\nDo NOT repeat these:\n'+allItems.slice(-20).join(', '):'';try{const result=await callAPI(buildSystemPrompt(),buildUserMsg(prompt)+extra);appendResults(result);}catch(e){showError('Something went wrong — try again.');}finally{setLoading(false);}}
