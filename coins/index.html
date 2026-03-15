@@ -37,9 +37,8 @@ header{padding:1.4rem 0;display:flex;align-items:center;justify-content:space-be
 .free-title{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:2px;color:var(--accent);margin-bottom:.3rem;}
 .free-desc{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);}
 .free-timer{font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:2px;color:var(--accent);margin-top:.4rem;}
-.claim-btn{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:2px;padding:.6rem 1.8rem;background:var(--accent);color:var(--bg);border:none;border-radius:4px;cursor:pointer;transition:all .15s;white-space:nowrap;flex-shrink:0;}
-.claim-btn:hover{background:var(--accent2);transform:translateY(-1px);}
-.claim-btn:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+.coins-auto-badge{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:3px;text-transform:uppercase;padding:.4rem .9rem;border:1px solid rgba(232,255,71,.3);border-radius:3px;color:var(--accent);flex-shrink:0;animation:glowPulse 2s ease-in-out infinite;}
+@keyframes glowPulse{0%,100%{border-color:rgba(232,255,71,.2);color:rgba(232,255,71,.6);}50%{border-color:rgba(232,255,71,.6);color:var(--accent);}}
 
 /* Packages */
 .section-label{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:4px;text-transform:uppercase;color:var(--text3);display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;margin-top:2rem;}
@@ -109,11 +108,11 @@ footer{margin-top:2rem;padding:2rem 0 3rem;border-top:1px solid var(--border);di
   <!-- Free coins -->
   <div class="free-section">
     <div class="free-left">
-      <div class="free-title">🎁 Free Daily Coins</div>
-      <div class="free-desc">Claim 11 free coins — resets every 10 minutes</div>
+      <div class="free-title">🎁 Auto Coins</div>
+      <div class="free-desc">Your coins top up to 11 automatically every 10 minutes</div>
       <div class="free-timer" id="freeTimer"></div>
     </div>
-    <button class="claim-btn" id="claimBtn" onclick="claimFreeCoins()">Claim 11</button>
+    <div class="coins-auto-badge">AUTO</div>
   </div>
 
   <!-- Cost breakdown -->
@@ -230,43 +229,46 @@ function getTimeAgo(ts){
   return days+' day ago';
 }
 
-// ── Free coins ────────────────────────────────────────────
+// ── Auto coins ────────────────────────────────────────────
 function getLastClaim(){return parseInt(localStorage.getItem(FREE_CLAIM_KEY)||'0');}
 
-function claimFreeCoins(){
+function checkAndAutoTopup(){
   const now=Date.now();
   const last=getLastClaim();
-  if(now-last<FREE_INTERVAL){showToast('Not yet! Wait for the timer.');return;}
-  localStorage.setItem(FREE_CLAIM_KEY,now);
-  addCoins(FREE_AMOUNT,'Free daily coins claimed');
-  showToast('🎁 11 coins added!');
-  updateClaimUI();
+  if(now-last>=FREE_INTERVAL){
+    const current=getCoins();
+    if(current<FREE_AMOUNT){
+      const toAdd=FREE_AMOUNT-current;
+      localStorage.setItem(FREE_CLAIM_KEY,now);
+      addCoins(toAdd,'Auto top-up to 11 coins');
+      showToast('🎁 Coins topped up to 11!');
+    } else {
+      // Just update the last claim time so timer resets
+      localStorage.setItem(FREE_CLAIM_KEY,now);
+    }
+  }
+  updateTimerUI();
 }
 
-function updateClaimUI(){
+function updateTimerUI(){
   const now=Date.now();
   const last=getLastClaim();
   const diff=FREE_INTERVAL-(now-last);
-  const btn=document.getElementById('claimBtn');
   const timer=document.getElementById('freeTimer');
-
   if(diff<=0){
-    btn.disabled=false;
-    btn.textContent='Claim 11';
-    timer.textContent='Available now!';
+    timer.textContent='Topping up now...';
     timer.style.color='var(--accent)';
   } else {
-    btn.disabled=true;
     const mins=Math.floor(diff/60000);
     const secs=Math.floor((diff%60000)/1000);
-    timer.textContent='Next claim in: '+mins+'m '+secs+'s';
+    timer.textContent='Next top-up in: '+mins+'m '+secs+'s';
     timer.style.color='var(--text3)';
-    btn.textContent='Claimed';
   }
 }
 
-setInterval(updateClaimUI, 1000);
-updateClaimUI();
+// Check every second
+setInterval(()=>{checkAndAutoTopup();}, 1000);
+checkAndAutoTopup();
 
 // ── Buy coins (placeholder for payment) ──────────────────
 function buyCoins(amount, price){
