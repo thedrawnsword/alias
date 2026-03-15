@@ -32,7 +32,6 @@ function authMiddleware(req, res, next) {
   const token = req.headers.authorization?.split(' ')[1];
   if (!token) return res.status(401).json({ error: 'No token' });
 
-  // Handle Firebase fallback tokens
   if (token.startsWith('firebase_')) {
     req.user = { id: token.replace('firebase_', ''), email: '', name: '' };
     return next();
@@ -83,6 +82,14 @@ app.post('/api/auth/firebase', async (req, res) => {
     }
     const token = jwt.sign({ id: user._id, email: user.email, name: user.name }, JWT_SECRET, { expiresIn: '30d' });
     res.json({ token, user: { id: user._id, name: user.name, email: user.email } });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// Delete Account
+app.delete('/api/auth/delete', authMiddleware, async (req, res) => {
+  try {
+    await User.findByIdAndDelete(req.user.id);
+    res.json({ ok: true });
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
