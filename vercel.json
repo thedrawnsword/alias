@@ -7,17 +7,9 @@
     }
   ],
   "routes": [
-    { "src": "/api/(.*)", "dest": "/server.js" },
-    { "src": "/login", "dest": "/login/index.html" },
-    { "src": "/signup", "dest": "/signup/index.html" },
-    { "src": "/coins", "dest": "/coins/index.html" },
-    { "src": "/bio", "dest": "/bio/index.html" },
-    { "src": "/caption", "dest": "/caption/index.html" },
-    { "src": "/hashtag", "dest": "/hashtag/index.html" },
-    { "src": "/hooks", "dest": "/hooks/index.html" },
-    { "src": "/scripthook", "dest": "/scripthook/index.html" },
-    { "src": "/ideas", "dest": "/ideas/index.html" },
-    { "src": "/username", "dest": "/username/index.html" },
-    { "src": "/(.*)", "dest": "/server.js" }
+    {
+      "src": "/(.*)",
+      "dest": "/server.js"
+    }
   ]
 }
