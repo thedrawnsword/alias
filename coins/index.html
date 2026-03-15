@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phraselix — Coins</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#06070a;--bg2:#0d0f14;--bg3:#13161e;--border:#1e2230;--border2:#2a2f42;--accent:#e8ff47;--accent2:#c8e000;--text:#eeeef5;--text2:#7a7f9a;--text3:#4a4f66;--red:#ff4757;--blue:#4ecdc4;--gold:#f5c518;}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;cursor:none;}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");opacity:.4;}
+body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(232,255,71,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(232,255,71,.025) 1px,transparent 1px);background-size:60px 60px;}
+@media(hover:none),(max-width:600px){body{cursor:auto;}.cursor,.cursor-ring{display:none;}}
+.cursor{position:fixed;width:8px;height:8px;background:var(--accent);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);mix-blend-mode:difference;}
+.cursor-ring{position:fixed;width:32px;height:32px;border:1px solid rgba(232,255,71,.3);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .3s,height .3s,border-color .3s;}
+.wrap{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:0 1.5rem}
+header{padding:1.4rem 0;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:4px;color:var(--accent);opacity:.65;text-decoration:none;transition:opacity .2s;}
+.logo:hover{opacity:1;}
+.header-right{display:flex;align-items:center;gap:1rem;}
+.back-btn{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:2px;text-transform:uppercase;color:var(--text3);text-decoration:none;transition:color .2s;}
+.back-btn:hover{color:var(--accent);}
+.coin-display{font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:.4rem;}
+
+/* Hero balance */
+.balance-section{text-align:center;padding:3rem 0 2rem;}
+.balance-label{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:4px;text-transform:uppercase;color:var(--text3);margin-bottom:1rem;}
+.balance-amount{font-family:'Bebas Neue',sans-serif;font-size:6rem;letter-spacing:4px;color:var(--gold);line-height:1;text-shadow:0 0 60px rgba(245,197,24,.3);}
+.balance-unit{font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:3px;text-transform:uppercase;color:var(--text3);margin-top:.5rem;}
+
+/* Free coins */
+.free-section{background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:1.5rem;margin-bottom:2rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;}
+.free-left{}
+.free-title{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:2px;color:var(--accent);margin-bottom:.3rem;}
+.free-desc{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);}
+.free-timer{font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:2px;color:var(--accent);margin-top:.4rem;}
+.claim-btn{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:2px;padding:.6rem 1.8rem;background:var(--accent);color:var(--bg);border:none;border-radius:4px;cursor:pointer;transition:all .15s;white-space:nowrap;flex-shrink:0;}
+.claim-btn:hover{background:var(--accent2);transform:translateY(-1px);}
+.claim-btn:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+
+/* Packages */
+.section-label{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:4px;text-transform:uppercase;color:var(--text3);display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;margin-top:2rem;}
+.section-label::before{content:'//';color:var(--accent);opacity:.5;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border2);}
+.packages-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:2rem;}
+@media(max-width:600px){.packages-grid{grid-template-columns:1fr;}}
+.package-card{background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:1.5rem;text-align:center;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;}
+.package-card:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:0 12px 40px rgba(245,197,24,.1);}
+.package-card.popular{border-color:rgba(245,197,24,.4);}
+.popular-badge{position:absolute;top:.8rem;right:.8rem;font-family:'DM Mono',monospace;font-size:.48rem;letter-spacing:2px;text-transform:uppercase;background:var(--gold);color:var(--bg);padding:.15rem .5rem;border-radius:2px;}
+.package-coins{font-family:'Bebas Neue',sans-serif;font-size:3rem;letter-spacing:2px;color:var(--gold);line-height:1;}
+.package-coin-label{font-family:'DM Mono',monospace;font-size:.55rem;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:1rem;}
+.package-price{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:2px;color:var(--text);margin-bottom:.5rem;}
+.package-desc{font-family:'DM Mono',monospace;font-size:.52rem;letter-spacing:1px;text-transform:uppercase;color:var(--text3);}
+.buy-btn{width:100%;font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:2px;text-transform:uppercase;padding:.6rem 1rem;background:transparent;border:1px solid var(--border2);border-radius:3px;color:var(--text2);cursor:pointer;transition:all .15s;margin-top:1rem;}
+.buy-btn:hover{border-color:var(--gold);color:var(--gold);}
+.package-card.popular .buy-btn{border-color:var(--gold);color:var(--gold);}
+.package-card.popular .buy-btn:hover{background:var(--gold);color:var(--bg);}
+
+/* History */
+.history-section{margin-bottom:3rem;}
+.history-list{}
+.history-item{display:flex;align-items:center;justify-content:space-between;padding:.9rem 1.2rem;border-bottom:1px solid var(--border);transition:background .15s;}
+.history-item:hover{background:var(--bg2);}
+.history-item:last-child{border-bottom:none;}
+.history-left{}
+.history-action{font-family:'DM Sans',sans-serif;font-size:.9rem;color:var(--text);}
+.history-time{font-family:'DM Mono',monospace;font-size:.52rem;letter-spacing:1px;text-transform:uppercase;color:var(--text3);margin-top:.2rem;}
+.history-amount{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:1px;}
+.history-amount.plus{color:var(--gold);}
+.history-amount.minus{color:var(--text2);}
+.history-empty{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:2px;text-transform:uppercase;color:var(--text3);text-align:center;padding:2rem;border:1px solid var(--border);border-radius:4px;}
+
+/* Cost breakdown */
+.cost-section{background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:1.5rem;margin-bottom:3rem;}
+.cost-title{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:1rem;opacity:.8;}
+.cost-row{display:flex;align-items:center;justify-content:space-between;padding:.5rem 0;border-bottom:1px solid var(--border);}
+.cost-row:last-child{border-bottom:none;}
+.cost-name{font-family:'DM Sans',sans-serif;font-size:.85rem;color:var(--text2);}
+.cost-coins{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:1px;color:var(--gold);}
+
+footer{margin-top:2rem;padding:2rem 0 3rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.footer-text{font-family:'DM Mono',monospace;font-size:.58rem;color:var(--text3);letter-spacing:2px;text-transform:uppercase;}
+.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(20px);background:var(--accent);color:var(--bg);font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:2px;text-transform:uppercase;padding:.6rem 1.4rem;border-radius:3px;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;z-index:9999;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="wrap">
+  <header>
+    <a class="logo" href="/">Phraselix</a>
+    <div class="header-right">
+      <a class="back-btn" href="/">← All Tools</a>
+      <div class="coin-display">🪙 <span id="headerCoins">0</span></div>
+    </div>
+  </header>
+
+  <div class="balance-section">
+    <div class="balance-label">// Your Balance</div>
+    <div class="balance-amount" id="balanceAmount">0</div>
+    <div class="balance-unit">Phraselix Coins</div>
+  </div>
+
+  <!-- Free coins -->
+  <div class="free-section">
+    <div class="free-left">
+      <div class="free-title">🎁 Free Daily Coins</div>
+      <div class="free-desc">Claim 11 free coins — resets every 10 minutes</div>
+      <div class="free-timer" id="freeTimer"></div>
+    </div>
+    <button class="claim-btn" id="claimBtn" onclick="claimFreeCoins()">Claim 11</button>
+  </div>
+
+  <!-- Cost breakdown -->
+  <div class="section-label">How coins work</div>
+  <div class="cost-section">
+    <div class="cost-title">// Cost per generation</div>
+    <div class="cost-row"><span class="cost-name">Username Generator</span><span class="cost-coins">1 🪙</span></div>
+    <div class="cost-row"><span class="cost-name">Hashtag Generator</span><span class="cost-coins">1 🪙</span></div>
+    <div class="cost-row"><span class="cost-name">Title Generator</span><span class="cost-coins">1 🪙</span></div>
+    <div class="cost-row"><span class="cost-name">Bio Generator</span><span class="cost-coins">2 🪙</span></div>
+    <div class="cost-row"><span class="cost-name">Caption Generator</span><span class="cost-coins">2 🪙</span></div>
+    <div class="cost-row"><span class="cost-name">Script Hook Generator</span><span class="cost-coins">2 🪙</span></div>
+    <div class="cost-row"><span class="cost-name">Content Ideas</span><span class="cost-coins">2 🪙</span></div>
+  </div>
+
+  <!-- Packages -->
+  <div class="section-label">Buy Coins</div>
+  <div class="packages-grid">
+    <div class="package-card">
+      <div class="package-coins">50</div>
+      <div class="package-coin-label">Coins</div>
+      <div class="package-price">$0.99</div>
+      <div class="package-desc">Good for starters</div>
+      <button class="buy-btn" onclick="buyCoins(50,'$0.99')">Buy Now</button>
+    </div>
+    <div class="package-card popular">
+      <div class="popular-badge">Popular</div>
+      <div class="package-coins">200</div>
+      <div class="package-coin-label">Coins</div>
+      <div class="package-price">$2.99</div>
+      <div class="package-desc">Best value</div>
+      <button class="buy-btn" onclick="buyCoins(200,'$2.99')">Buy Now</button>
+    </div>
+    <div class="package-card">
+      <div class="package-coins">500</div>
+      <div class="package-coin-label">Coins</div>
+      <div class="package-price">$5.99</div>
+      <div class="package-desc">Power user</div>
+      <button class="buy-btn" onclick="buyCoins(500,'$5.99')">Buy Now</button>
+    </div>
+  </div>
+
+  <!-- Transaction history -->
+  <div class="section-label">Transaction History</div>
+  <div class="history-section">
+    <div id="historyList"></div>
+  </div>
+
+  <footer>
+    <span class="footer-text">Phraselix — Content Tools</span>
+    <span class="footer-text">Coins</span>
+  </footer>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const TOKEN = localStorage.getItem('phraselix_token');
+const USER = (()=>{try{return JSON.parse(localStorage.getItem('phraselix_user'));}catch{return null;}})();
+if(!TOKEN||!USER){window.location.href='/login';}
+
+// ── Coins System ──────────────────────────────────────────
+const COINS_KEY = 'phraselix_coins';
+const HISTORY_KEY = 'phraselix_coin_history';
+const FREE_CLAIM_KEY = 'phraselix_last_claim';
+const FREE_AMOUNT = 11;
+const FREE_INTERVAL = 10 * 60 * 1000; // 10 minutes in ms
+
+function getCoins(){return parseInt(localStorage.getItem(COINS_KEY)||'0');}
+function setCoins(n){localStorage.setItem(COINS_KEY,n);updateBalanceUI();}
+function addCoins(n,reason){setCoins(getCoins()+n);addHistory('+'+n,reason);}
+function spendCoins(n,reason){setCoins(Math.max(0,getCoins()-n));addHistory('-'+n,reason);}
+
+function getHistory(){try{return JSON.parse(localStorage.getItem(HISTORY_KEY)||'[]');}catch{return[];}}
+function addHistory(amount,reason){
+  const history=getHistory();
+  history.unshift({amount,reason,time:Date.now()});
+  if(history.length>50)history.pop();
+  localStorage.setItem(HISTORY_KEY,JSON.stringify(history));
+  renderHistory();
+}
+
+function updateBalanceUI(){
+  const coins=getCoins();
+  document.getElementById('balanceAmount').textContent=coins;
+  document.getElementById('headerCoins').textContent=coins;
+}
+
+function renderHistory(){
+  const history=getHistory();
+  const list=document.getElementById('historyList');
+  if(!history.length){
+    list.innerHTML='<div class="history-empty">No transactions yet.<br>Claim your free coins to get started!</div>';
+    return;
+  }
+  list.innerHTML='';
+  history.forEach(item=>{
+    const el=document.createElement('div');
+    el.className='history-item';
+    const isPlus=item.amount.startsWith('+');
+    const timeAgo=getTimeAgo(item.time);
+    el.innerHTML='<div class="history-left"><div class="history-action">'+item.reason+'</div><div class="history-time">'+timeAgo+'</div></div><div class="history-amount '+(isPlus?'plus':'minus')+'">'+item.amount+' 🪙</div>';
+    list.appendChild(el);
+  });
+}
+
+function getTimeAgo(ts){
+  const diff=Date.now()-ts;
+  const mins=Math.floor(diff/60000);
+  const hrs=Math.floor(diff/3600000);
+  const days=Math.floor(diff/86400000);
+  if(mins<1)return 'Just now';
+  if(mins<60)return mins+' min ago';
+  if(hrs<24)return hrs+' hr ago';
+  return days+' day ago';
+}
+
+// ── Free coins ────────────────────────────────────────────
+function getLastClaim(){return parseInt(localStorage.getItem(FREE_CLAIM_KEY)||'0');}
+
+function claimFreeCoins(){
+  const now=Date.now();
+  const last=getLastClaim();
+  if(now-last<FREE_INTERVAL){showToast('Not yet! Wait for the timer.');return;}
+  localStorage.setItem(FREE_CLAIM_KEY,now);
+  addCoins(FREE_AMOUNT,'Free daily coins claimed');
+  showToast('🎁 11 coins added!');
+  updateClaimUI();
+}
+
+function updateClaimUI(){
+  const now=Date.now();
+  const last=getLastClaim();
+  const diff=FREE_INTERVAL-(now-last);
+  const btn=document.getElementById('claimBtn');
+  const timer=document.getElementById('freeTimer');
+
+  if(diff<=0){
+    btn.disabled=false;
+    btn.textContent='Claim 11';
+    timer.textContent='Available now!';
+    timer.style.color='var(--accent)';
+  } else {
+    btn.disabled=true;
+    const mins=Math.floor(diff/60000);
+    const secs=Math.floor((diff%60000)/1000);
+    timer.textContent='Next claim in: '+mins+'m '+secs+'s';
+    timer.style.color='var(--text3)';
+    btn.textContent='Claimed';
+  }
+}
+
+setInterval(updateClaimUI, 1000);
+updateClaimUI();
+
+// ── Buy coins (placeholder for payment) ──────────────────
+function buyCoins(amount, price){
+  showToast('Payment system coming soon! 🚀');
+  // TODO: integrate payment (Stripe, etc.)
+}
+
+// ── Init ──────────────────────────────────────────────────
+updateBalanceUI();
+renderHistory();
+
+// If first time, give welcome coins
+if(!localStorage.getItem(FREE_CLAIM_KEY) && getCoins()===0){
+  // Don't auto-claim, let them click
+}
+
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+
+const cursor=document.getElementById('cursor');
+const ring=document.getElementById('cursorRing');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx+'px';cursor.style.top=my+'px';});
+function animRing(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animRing);}animRing();
+document.querySelectorAll('a,button').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{ring.style.width='48px';ring.style.height='48px';ring.style.borderColor='rgba(232,255,71,.6)';});
+  el.addEventListener('mouseleave',()=>{ring.style.width='32px';ring.style.height='32px';ring.style.borderColor='rgba(232,255,71,.3)';});
+});
+</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>
